@@ -1,101 +1,499 @@
-import Image from "next/image";
+// app/page.tsx
+// "use client";
+
+// import {  useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { toast } from "sonner";
+// import {
+//   ChevronLeft,
+//   ChevronRight,
+//   Timer,
+//   Zap,
+//   Info,
+//   Home,
+// } from "lucide-react";
+// import { Button } from "../../components/ui/button";
+// import { Card, CardContent } from "../../components/ui/card";
+// import { useChargingStatus } from "../../hooks/useChargingStatus";
+// import { useBMSData } from "../../hooks/useBMSData";
+// import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "../../components/ui/tooltip"; // Fix path
+// import { useWebSocket } from "../../contexts/WebSocketContext";
+
+// export default function HomePage() {
+//   const router = useRouter();
+//   const { updateChargingStatus } = useChargingStatus();
+//   const [step, setStep] = useState<"hours" | "minutes">("hours");
+//   const [hours, setHours] = useState(0);
+//   const [minutes, setMinutes] = useState(0);
+//   const [isLoading, setIsLoading] = useState(false);
+  
+  
+//   const { sendMessage } = useWebSocket();
+
+//   const formatNumber = (num: number) => num.toString().padStart(2, "0");
+
+//   const incrementValue = (type: "hours" | "minutes") => {
+//     if (type === "hours") {
+//       setHours((prev) => (prev < 23 ? prev + 1 : 0));
+//     } else {
+//       setMinutes((prev) => (prev < 59 ? prev + 1 : 0));
+//     }
+//   };
+
+//   const decrementValue = (type: "hours" | "minutes") => {
+//     if (type === "hours") {
+//       setHours((prev) => (prev > 0 ? prev - 1 : 23));
+//     } else {
+//       setMinutes((prev) => (prev > 0 ? prev - 1 : 59));
+//     }
+//   };
+
+//   const handleSelect = async () => {
+//     if (hours === 0 && minutes === 0) {
+//       toast.error("Please select a valid charging duration");
+//       return;
+//     }
+
+//     setIsLoading(true);
+//     try {
+//       const success = await updateChargingStatus(true);
+//       // if (success) {
+//       //   sendMessage({ type: "SET_TIMER", data: { hours, minutes } });
+//       //   sendMessage({ type: "request_charging_status" });
+// // Correct way to send WebSocket message
+      
+//         toast.success(`Charging scheduled for ${hours}h ${minutes}m`);
+//         router.push("/charge");
+//       // } else {
+//       //   toast.error("Failed to initialize charging");
+      
+//     } catch (error) {
+//       console.error("Error initializing charging:", error);
+//       toast.error("Failed to initialize charging");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleQuickSelect = (mins: number) => {
+//     setHours(Math.floor(mins / 60));
+//     setMinutes(mins % 60);
+//   };
+
+//   const getTotalMinutes = () => hours * 60 + minutes;
+
+//   return (
+//     <div
+//   className="w-full min-h-screen bg-transparent font-sans pt-7 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center"
+//   style={{
+//     backgroundImage: "url('/lib/main-bg.png')",
+//     backgroundSize: "cover",
+//     backgroundPosition: "center",
+//   }}
+// >
+
+//       {/* Home Button */}
+//       <Button className="mb-6 text-lg sm:text-xl bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-all duration-200 flex items-center">
+//         <Home className="w-5 h-5 mr-2" />
+//         Home
+//       </Button>
+
+//       {/* Main Card */}
+//       <div className="flex justify-center items-center w-full max-w-3xl px-4 sm:px-8 md:px-12">
+//         <Card className="w-full bg-transparent border-none">
+//           <CardContent className="border-none p-6 sm:p-8">
+//             <div className="flex flex-col items-center space-y-6 sm:space-y-8">
+//               {/* Header */}
+//               <div className="flex items-center space-x-3">
+//                 <Timer className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
+//                 <span className="text-lg sm:text-xl font-semibold text-white">
+//                   Set Charging Duration
+//                 </span>
+//                 <TooltipProvider>
+//                   <Tooltip>
+//                     <TooltipTrigger>
+//                       <Info className="w-5 h-5 text-neutral-400" />
+//                     </TooltipTrigger>
+//                     <TooltipContent>
+//                       <p>Select how long you want to charge your vehicle</p>
+//                     </TooltipContent>
+//                   </Tooltip>
+//                 </TooltipProvider>
+//               </div>
+
+//               {/* Quick Select Buttons */}
+//               <div className="flex gap-2 w-full justify-center flex-wrap">
+//                 {[1, 5, 20, 60].map((mins) => (
+//                   <Button
+//                     key={mins}
+//                     variant="outline"
+//                     size="sm"
+//                     onClick={() => handleQuickSelect(mins)}
+//                     className={`px-3 py-1 text-sm sm:text-base ${
+//                       getTotalMinutes() === mins
+//                         ? "bg-red-500 text-white border-red-500"
+//                         : "text-neutral-400 hover:text-white"
+//                     }`}
+//                   >
+//                     {mins >= 60 ? `${Math.floor(mins / 60)}h` : `${mins}m`}
+//                   </Button>
+//                 ))}
+//               </div>
+
+//               {/* Time Selection */}
+//               <div className="flex items-center justify-center w-full space-x-6 sm:space-x-8">
+//                 <Button
+//                   variant="outline"
+//                   className="text-black hover:text-white hover:bg-neutral-950 transition-all duration-200 transform hover:scale-110 p-2 sm:p-4"
+//                   onClick={() => decrementValue(step)}
+//                 >
+//                   <ChevronLeft className="w-12 h-12 sm:w-16 sm:h-16 stroke-2" />
+//                 </Button>
+
+//                 <div className="flex items-baseline space-x-3">
+//                   <div
+//                     className={`text-5xl sm:text-7xl font-bold transition-all duration-300 cursor-pointer ${
+//                       step === "hours"
+//                         ? "text-red-500 scale-110"
+//                         : "text-white scale-100 hover:text-red-400"
+//                     }`}
+//                     onClick={() => setStep("hours")}
+//                   >
+//                     {formatNumber(hours)}
+//                   </div>
+//                   <div className="text-5xl sm:text-7xl font-bold text-white">:</div>
+//                   <div
+//                     className={`text-5xl sm:text-7xl font-bold transition-all duration-300 cursor-pointer ${
+//                       step === "minutes"
+//                         ? "text-red-500 scale-110"
+//                         : "text-white scale-100 hover:text-red-400"
+//                     }`}
+//                     onClick={() => setStep("minutes")}
+//                   >
+//                     {formatNumber(minutes)}
+//                   </div>
+//                 </div>
+
+//                 <Button
+//                   variant="outline"
+//                   className="text-black hover:text-white hover:bg-neutral-950 transition-all duration-200 transform hover:scale-110 p-2 sm:p-4"
+//                   onClick={() => incrementValue(step)}
+//                 >
+//                   <ChevronRight className="w-12 h-12 sm:w-16 sm:h-16 stroke-2" />
+//                 </Button>
+//               </div>
+
+//               {/* Initialize Button */}
+//               <Button
+//                 className="w-36 sm:w-40 h-10 sm:h-12 text-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition-all duration-200 hover:scale-105 disabled:opacity-50"
+//                 onClick={handleSelect}
+//                 disabled={isLoading || (hours === 0 && minutes === 0)}
+//               >
+//                 {isLoading ? "Loading..." : <><Zap className="w-5 h-5 mr-2" /> Initialize</>}
+//               </Button>
+//             </div>
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   );
+// };
+
+
+// "use client";
+
+// import { useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { toast } from "sonner";
+// import {
+//   ChevronLeft,
+//   ChevronRight,
+//   Timer,
+//   Zap,
+//   Info,
+//   Home,
+// } from "lucide-react";
+// import { Button } from "../../components/ui/button";
+// import { Card, CardContent } from "../../components/ui/card";
+// import { useChargingStatus } from "../../hooks/useChargingStatus";
+// import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "../../components/ui/tooltip";
+
+
+// export default function HomePage() {
+//   const router = useRouter();
+//   const { updateChargingStatus } = useChargingStatus();
+ 
+//   const [step, setStep] = useState<"hours" | "minutes">("hours");
+//   const [hours, setHours] = useState(0);
+//   const [minutes, setMinutes] = useState(0);
+//   const [isLoading, setIsLoading] = useState(false);
+
+//   const formatNumber = (num: number) => num.toString().padStart(2, "0");
+
+//   const incrementValue = (type: "hours" | "minutes") => {
+//     if (type === "hours") {
+//       setHours((prev) => (prev < 23 ? prev + 1 : 0));
+//     } else {
+//       setMinutes((prev) => (prev < 59 ? prev + 1 : 0));
+//     }
+//   };
+
+//   const decrementValue = (type: "hours" | "minutes") => {
+//     if (type === "hours") {
+//       setHours((prev) => (prev > 0 ? prev - 1 : 23));
+//     } else {
+//       setMinutes((prev) => (prev > 0 ? prev - 1 : 59));
+//     }
+//   };
+
+//   const handleSelect = async () => {
+//     if (hours === 0 && minutes === 0) {
+//       toast.error("Please select a valid charging duration");
+//       return;
+//     }
+
+//     setIsLoading(true);
+//     try {
+//       const success = await updateChargingStatus(true);
+//       if (success) {
+//         toast.success(`Charging scheduled for ${hours}h ${minutes}m`);
+//         router.push("/charge");
+//       } else {
+//         toast.error("Failed to initialize charging");
+//       }
+//     } catch (error) {
+//       console.error("Error initializing charging:", error);
+//       toast.error("Failed to initialize charging");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleQuickSelect = (mins: number) => {
+//     setHours(Math.floor(mins / 60));
+//     setMinutes(mins % 60);
+//   };
+
+//   const getTotalMinutes = () => hours * 60 + minutes;
+
+//   return (
+//     <div className="w-full min-h-screen bg-transparent font-sans pt-7 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center"
+//       style={{ backgroundImage: "url('/lib/main-bg.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
+//       <Button className="mb-6 text-lg sm:text-xl bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-all duration-200 flex items-center">
+//         <Home className="w-5 h-5 mr-2" />
+//         Home
+//       </Button>
+//       <div className="flex justify-center items-center w-full max-w-3xl px-4 sm:px-8 md:px-12">
+//         <Card className="w-full bg-transparent border-none">
+//           <CardContent className="border-none p-6 sm:p-8">
+//             <div className="flex flex-col items-center space-y-6 sm:space-y-8">
+//               <div className="flex items-center space-x-3">
+//                 <Timer className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
+//                 <span className="text-lg sm:text-xl font-semibold text-white">Set Charging Duration</span>
+//                 <TooltipProvider>
+//                   <Tooltip>
+//                     <TooltipTrigger>
+//                       <Info className="w-5 h-5 text-neutral-400" />
+//                     </TooltipTrigger>
+//                     <TooltipContent>
+//                       <p>Select how long you want to charge your vehicle</p>
+//                     </TooltipContent>
+//                   </Tooltip>
+//                 </TooltipProvider>
+//               </div>
+//               <div className="flex gap-2 w-full justify-center flex-wrap">
+//                 {[1, 5, 20, 60].map((mins) => (
+//                   <Button key={mins} variant="outline" size="sm" onClick={() => handleQuickSelect(mins)}
+//                     className={`px-3 py-1 text-sm sm:text-base ${getTotalMinutes() === mins ? "bg-red-500 text-white border-red-500" : "text-neutral-400 hover:text-white"}`}>
+//                     {mins >= 60 ? `${Math.floor(mins / 60)}h` : `${mins}m`}
+//                   </Button>
+//                 ))}
+//               </div>
+//               <div className="flex items-center justify-center w-full space-x-6 sm:space-x-8">
+//                 <Button variant="outline" onClick={() => decrementValue(step)}>
+//                   <ChevronLeft className="w-12 h-12 sm:w-16 sm:h-16 stroke-2" />
+//                 </Button>
+//                 <div className="flex items-baseline space-x-3">
+//                   <div onClick={() => setStep("hours")} className={`text-5xl sm:text-7xl font-bold ${step === "hours" ? "text-red-500 scale-110" : "text-white hover:text-red-400"}`}>{formatNumber(hours)}</div>
+//                   <div className="text-5xl sm:text-7xl font-bold text-white">:</div>
+//                   <div onClick={() => setStep("minutes")} className={`text-5xl sm:text-7xl font-bold ${step === "minutes" ? "text-red-500 scale-110" : "text-white hover:text-red-400"}`}>{formatNumber(minutes)}</div>
+//                 </div>
+//                 <Button variant="outline" onClick={() => incrementValue(step)}>
+//                   <ChevronRight className="w-12 h-12 sm:w-16 sm:h-16 stroke-2" />
+//                 </Button>
+//               </div>
+//               <Button onClick={handleSelect} disabled={isLoading || (hours === 0 && minutes === 0)} className="w-36 sm:w-40 h-10 sm:h-12 text-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition-all duration-200 hover:scale-105 disabled:opacity-50">
+//                 {isLoading ? "Loading..." : <><Zap className="w-5 h-5 mr-2" /> Initialize</>}
+//               </Button>
+//             </div>
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   );
+// }
+// "use client";
+
+// import { useEffect, useRef } from "react";
+// import { useRouter } from "next/navigation";
+
+// export default function Home() {
+//   const videoRef = useRef<HTMLVideoElement>(null);
+//   const router = useRouter();
+//   const wsRef = useRef<WebSocket | null>(null);
+
+//   useEffect(() => {
+//     const video = videoRef.current;
+
+//     const handleVideoEnd = () => {
+//       router.push("/connect");
+//     };
+
+//     if (video) {
+//       video.addEventListener("ended", handleVideoEnd);
+//     }
+
+//     // ✅ Set up WebSocket connection
+//     wsRef.current = new WebSocket("ws://localhost:8080");
+
+//     wsRef.current.onopen = () => {
+//       console.log("WebSocket connected");
+//     };
+
+//     wsRef.current.onmessage = (event) => {
+//       try {
+//         const data = JSON.parse(event.data);
+//         console.log("WebSocket Message:", data);
+
+//         if (data?.redirectTo === "set-time") {
+//           router.push("/connect");
+//         }
+//       } catch (error) {
+//         console.error("WebSocket Error:", error);
+//       }
+//     };
+
+//     wsRef.current.onerror = (error) => {
+//       console.error("WebSocket Error:", error);
+//     };
+
+//     wsRef.current.onclose = () => {
+//       console.log("WebSocket disconnected");
+//     };
+
+//     return () => {
+//       // Cleanup: Remove event listener and close WebSocket
+//       if (video) {
+//         video.removeEventListener("ended", handleVideoEnd);
+//       }
+//       wsRef.current?.close();
+//     };
+//   }, [router]);
+
+//   return (
+//     <div className="relative w-[768px] h-[1024px] overflow-hidden bg-[#2A2D32] font-sans">
+//       <video
+//         ref={videoRef}
+//         className="absolute top-0 left-0 w-full h-full object-cover z-50"
+//         autoPlay
+//         muted
+//         playsInline
+//       >
+//         <source src="/intro.mp4" type="video/mp4" />
+//         Your browser does not support the video tag.
+//       </video>
+
+//       {/* Fallback background */}
+//       <div
+//         className="absolute top-0 left-0 w-full h-full z-[-1]"
+//         style={{
+//           backgroundImage: "url(/connect-bg.png)",
+//           backgroundSize: "cover",
+//           backgroundPosition: "center",
+//         }}
+//       />
+//     </div>
+//   );
+// }
+////ui
+"use client";
+
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const router = useRouter();
+  const wsRef = useRef<WebSocket | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  useEffect(() => {
+    const video = videoRef.current;
+
+    const handleVideoEnd = () => {
+      router.push("/connect");
+    };
+
+    if (video) {
+      video.addEventListener("ended", handleVideoEnd);
+    }
+
+    // ✅ Set up WebSocket connection
+    wsRef.current = new WebSocket("ws://localhost:8080");
+
+    wsRef.current.onopen = () => {
+      console.log("WebSocket connected");
+    };
+
+    wsRef.current.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log("WebSocket Message:", data);
+
+        if (data?.redirectTo === "set-time") {
+          router.push("/connect");
+        }
+      } catch (error) {
+        console.error("WebSocket Error:", error);
+      }
+    };
+
+    wsRef.current.onerror = (error) => {
+      console.error("WebSocket Error:", error);
+    };
+
+    wsRef.current.onclose = () => {
+      console.log("WebSocket disconnected");
+    };
+
+    return () => {
+      // Cleanup: Remove event listener and close WebSocket
+      if (video) {
+        video.removeEventListener("ended", handleVideoEnd);
+      }
+      wsRef.current?.close();
+    };
+  }, [router]);
+
+  return (
+    <div className="relative w-full h-screen overflow-hidden bg-[#2A2D32] font-sans">
+      <video
+        ref={videoRef}
+        className="absolute top-0 left-0 w-full h-full object-cover z-50"
+        autoPlay
+        muted
+        playsInline
+      >
+        <source src="/intro.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      {/* ✅ Responsive fallback background */}
+      <div
+        className="absolute top-0 left-0 w-full h-full z-[-1] bg-cover bg-center"
+        style={{
+          backgroundImage: "url(/connect-bg.png)",
+        }}
+      />
     </div>
   );
 }
