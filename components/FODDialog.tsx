@@ -11,17 +11,17 @@ const FODDialog = () => {
   const [isScanning, setIsScanning] = useState(false);
 
   useEffect(() => {
-    if (bmsData?.isFOD === true) { // ✅ Only trigger if isFOD is TRUE
+    if (bmsData?.isFOD === true) { 
       setIsScanning(true);
   
       setTimeout(() => {
-        setHasForeignObject(true);  // 🔴 FOD detected
+        setHasForeignObject(true);  
         setIsScanning(false);
-      }, 3000); // Simulate scanning delay
+      }, 3000); 
     } else {
-      setHasForeignObject(false); // 🟢 No FOD, reset UI
+      setHasForeignObject(false); 
     }
-  }, [bmsData?.isFOD]); // 🔄 Runs when isFOD updates
+  }, [bmsData?.isFOD]);
   
 
   return (
@@ -33,7 +33,6 @@ const FODDialog = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* Hero Section */}
       <div className="flex justify-center items-center p-1 pt-20 w-full px-8">
         <motion.div
           className="text-left flex-col gap-2 mb-12 relative"
@@ -53,8 +52,6 @@ const FODDialog = () => {
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Charging Pad */}
       <div className="w-full flex justify-center items-center mb-8">
         <div className="relative">
           <Image
@@ -94,8 +91,6 @@ const FODDialog = () => {
           )}
         </div>
       </div>
-
-      {/* Status Display */}
       <div className="w-full flex justify-center items-center">
         <motion.div
           className={`text-2xl font-bold ${

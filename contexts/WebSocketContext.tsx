@@ -646,7 +646,7 @@
 //   }
 //   return context;
 // };
-///missalignemnt
+// /missalignemnt
 "use client"; // Next.js ka client component batane ke liye
 
 import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
@@ -660,6 +660,7 @@ interface BMSData {
   isReceiverCoilDetected: boolean;
   isFOD: boolean;// Kya receiver coil detect ho rahi hai ya nahi
   isMiss: boolean;
+  // targetSOC?: number;
 }
 
 interface ChargingStatus {
@@ -685,7 +686,7 @@ interface WebSocketContextType {
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
 // ✅ Default values set karna
-const defaultBMSData: BMSData = { voltage: 0, current: 0, SOC: 0, isReceiverCoilDetected: false,  isFOD: false, isMiss:false, };
+const defaultBMSData: BMSData = { voltage: 0, current: 0, SOC: 0, isReceiverCoilDetected: false,  isFOD: false, isMiss:false,  };
 const defaultChargingStatus: ChargingStatus = { isCharging: false };
 
 // ✅ WebSocket Provider component banaya jisme WebSocket ka connection handle hoga
@@ -823,3 +824,193 @@ export const useWebSocket = () => {
   }
   return context;
 };
+//soc
+
+// "use client";
+
+// import React, {
+//   createContext,
+//   useContext,
+//   useEffect,
+//   useRef,
+//   useState,
+//   useCallback,
+// } from "react";
+// import { toast } from "sonner";
+
+// // Updated BMSData with targetSOC
+// interface BMSData {
+//   voltage: number;
+//   current: number;
+//   SOC: number;
+//   isReceiverCoilDetected: boolean;
+//   isFOD: boolean;
+//   isMiss: boolean;
+//   targetSOC: number; // ✅ New field
+// }
+
+// interface ChargingStatus {
+//   isCharging: boolean;
+// }
+
+// interface WebSocketMessage {
+//   type: string;
+//   data: BMSData | ChargingStatus | { message: string };
+// }
+
+// interface WebSocketContextType {
+//   sendMessage: (message: unknown) => void;
+//   connected: boolean;
+//   bmsData: BMSData;
+//   chargingStatus: ChargingStatus;
+//   lastMessage: WebSocketMessage | null;
+// }
+
+// const WebSocketContext = createContext<WebSocketContextType | null>(null);
+
+// // Updated defaultBMSData
+// const defaultBMSData: BMSData = {
+//   voltage: 0,
+//   current: 0,
+//   SOC: 15,
+//   isReceiverCoilDetected: false,
+//   isFOD: false,
+//   isMiss: false,
+//   targetSOC: 100, // ✅ Default value for targetSOC
+// };
+
+// const defaultChargingStatus: ChargingStatus = {
+//   isCharging: false,
+// };
+
+// export function WebSocketProvider({ children }: { children: React.ReactNode }) {
+//   const [connected, setConnected] = useState(false);
+//   const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
+//   const [bmsData, setBMSData] = useState<BMSData>(defaultBMSData);
+//   const [chargingStatus, setChargingStatus] = useState<ChargingStatus>(defaultChargingStatus);
+
+//   const ws = useRef<WebSocket | null>(null);
+//   const reconnectTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+//   const connect = useCallback(() => {
+//     if (ws.current) return;
+
+//     ws.current = new WebSocket("ws://localhost:8080");
+
+//     ws.current.onopen = () => {
+//       console.log("✅ WebSocket Connected");
+//       setConnected(true);
+//       toast.success("Connected to charging system");
+
+//       if (reconnectTimeout.current) {
+//         clearTimeout(reconnectTimeout.current);
+//         reconnectTimeout.current = undefined;
+//       }
+//     };
+
+//     ws.current.onmessage = (event) => {
+//       try {
+//         const data: WebSocketMessage = JSON.parse(event.data);
+//         console.log("📨 WebSocket Data:", data);
+
+//         setLastMessage(data);
+
+//         switch (data.type) {
+//           case "bms_data": {
+//             const incomingData = data.data as BMSData;
+//             setBMSData((prev) => ({
+//               ...prev,
+//               ...incomingData,
+//               targetSOC: incomingData.targetSOC ?? prev.targetSOC, // ✅ Handle partial data
+//             }));
+//             break;
+//           }
+
+//           case "charging_status": {
+//             const chargingData = data.data as ChargingStatus;
+//             setChargingStatus(chargingData);
+
+//             toast[chargingData.isCharging ? "success" : "info"](
+//               chargingData.isCharging ? "⚡ Charging Started!" : "🔴 Charging has been turned OFF."
+//             );
+//             break;
+//           }
+
+//           case "test_message":
+//             console.log("📩 Test Message from Server:", data.data);
+//             break;
+
+//           case "error":
+//             toast.error("⚠️ WebSocket Error Received");
+//             break;
+
+//           default:
+//             console.warn("🔍 Unknown WebSocket Message:", data);
+//         }
+//       } catch (error) {
+//         console.error("❌ WebSocket Data Parsing Error:", error);
+//       }
+//     };
+
+//     ws.current.onerror = (event) => {
+//       console.error("🚨 WebSocket Error:", event);
+//       toast.error("WebSocket connection error");
+//     };
+
+//     ws.current.onclose = () => {
+//       console.warn("⚠️ WebSocket Disconnected, attempting reconnect...");
+//       setConnected(false);
+//       ws.current = null;
+
+//       reconnectTimeout.current = setTimeout(() => {
+//         console.log("🔄 Attempting to reconnect...");
+//         connect();
+//       }, 3000);
+//     };
+//   }, []);
+
+//   useEffect(() => {
+//     connect();
+//     return () => {
+//       if (ws.current) ws.current.close();
+//       if (reconnectTimeout.current) clearTimeout(reconnectTimeout.current);
+//     };
+//   }, [connect]);
+
+//   const sendMessage = (message: unknown) => {
+//     if (ws.current?.readyState === WebSocket.OPEN) {
+//       console.log("🚀 Sending WebSocket Message:", JSON.stringify(message));
+//       ws.current.send(JSON.stringify(message));
+//     } else {
+//       toast.error("❌ Not connected to charging system");
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (bmsData.isFOD) {
+//       toast.error("⚠️ Foreign Object Detected! Charging may be unsafe.");
+//     }
+//   }, [bmsData.isFOD]);
+
+//   useEffect(() => {
+//     if (bmsData.isMiss) {
+//       toast.error("⚠️ Misalignment detected! Please realign the vehicle.");
+//     }
+//   }, [bmsData.isMiss]);
+
+//   return (
+//     <WebSocketContext.Provider
+//       value={{ sendMessage, connected, bmsData, chargingStatus, lastMessage }}
+//     >
+//       {children}
+//     </WebSocketContext.Provider>
+//   );
+// }
+
+// export const useWebSocket = () => {
+//   const context = useContext(WebSocketContext);
+//   if (!context) {
+//     throw new Error("useWebSocket must be used within a WebSocketProvider");
+//   }
+//   return context;
+// };

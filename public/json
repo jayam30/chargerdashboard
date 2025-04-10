@@ -5,7 +5,8 @@
     "current": 12.3,
     "SOC": 15,
     "isReceiverCoilDetected": true,
-    "isFOD": true,
+    "isFOD": false,
     "isMiss": false
+    
   }
 }

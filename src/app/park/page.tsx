@@ -175,14 +175,14 @@ const Park = () => {
 
   useEffect(() => {
     if (isReceiverCoilDetected) {
-      const timeout = setTimeout(() => router.push("/set-time"), 5000);
+      const timeout = setTimeout(() => router.push("/select"), 5000);
       return () => clearTimeout(timeout);
     }
   }, [isReceiverCoilDetected, router]);
 
   return (
     <div
-      className="w-full h-screen overflow-hidden bg-[#2A2D32] font-sans pt-7 flex flex-col items-center"
+      className="w-[768px] h-[1024px] overflow-hidden bg-[#2A2D32] font-sans pt-7"
       style={{
         backgroundImage: "url(/main-bg.png)",
         backgroundSize: "cover",

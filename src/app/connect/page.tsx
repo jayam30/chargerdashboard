@@ -229,8 +229,12 @@ export default function Connect() {
 
   return (
     <div
-      className="relative w-full h-screen overflow-hidden bg-[#2A2D32] font-sans bg-cover bg-center"
-      style={{ backgroundImage: "url(/connect-bg.png)" }}
+      className="w-[768px] h-[1024px] overflow-hidden bg-[#2A2D32] font-sans pt-7"
+      style={{
+        backgroundImage: "url(/main-bg.png)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
       {/* Hero Section */}
       <div className="flex justify-center items-center px-6 md:px-12 lg:px-24 py-24 md:py-32 lg:py-40 w-full">

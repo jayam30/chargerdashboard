@@ -558,9 +558,9 @@ export default function HomePage() {
 
   return (
     <div
-      className="w-full min-h-screen bg-transparent font-sans pt-7 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center"
+      className="w-[768px] h-[1024px] overflow-hidden bg-[#2A2D32] font-sans pt-7"
       style={{
-        backgroundImage: "url('/lib/main-bg.png')",
+        backgroundImage: "url(/main-bg.png)",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

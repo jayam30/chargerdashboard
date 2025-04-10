@@ -2,8 +2,9 @@
   "name": "charging-system",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
+"scripts": {
+    "dev": "concurrently \"next dev --turbopack\" \"npm run dev:backend\"",
+    "dev:backend": "npm --prefix backend run dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -36,6 +37,7 @@
     "@types/node": "^20.17.18",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.1.2",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "postcss": "^8",

@@ -441,13 +441,13 @@ export default function Home() {
     wsRef.current = new WebSocket("ws://localhost:8080");
 
     wsRef.current.onopen = () => {
-      console.log("WebSocket connected");
+      // console.log("WebSocket connected");
     };
 
     wsRef.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log("WebSocket Message:", data);
+        // console.log("WebSocket Message:", data);
 
         if (data?.redirectTo === "set-time") {
           router.push("/connect");
@@ -475,7 +475,7 @@ export default function Home() {
   }, [router]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#2A2D32] font-sans">
+    <div className="relative w-[768px] h-[1024px] overflow-hidden bg-[#2A2D32] font-sans">
       <video
         ref={videoRef}
         className="absolute top-0 left-0 w-full h-full object-cover z-50"
@@ -489,9 +489,11 @@ export default function Home() {
 
       {/* ✅ Responsive fallback background */}
       <div
-        className="absolute top-0 left-0 w-full h-full z-[-1] bg-cover bg-center"
+        className="absolute top-0 left-0 w-full h-full z-[-1]"
         style={{
           backgroundImage: "url(/connect-bg.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       />
     </div>
