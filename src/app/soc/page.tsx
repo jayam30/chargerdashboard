@@ -115,3 +115,13 @@
 //   );
 // }
 // taget energy
+// src/app/soc/page.tsx
+
+export default function SOCPage() {
+    return (
+      <div>
+        <h1>State of Charge</h1>
+      </div>
+    );
+  }
+  

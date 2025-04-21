@@ -92,13 +92,15 @@ const Page = () => {
 
   useEffect(() => {
     if (bmsData) {
-      setIsReceiverCoilDetected(bmsData.isReceiverCoilDetected);
+      // setIsReceiverCoilDetected(bmsData.isReceiverCoilDetected);
+      setIsReceiverCoilDetected(bmsData.isReceiverCoilDetected ?? false);
+
     }
   }, [bmsData]);
 
   useEffect(() => {
     const redirectToHome = async () => {
-      await updateChargingStatus(false);
+      // await updateChargingStatus(false);
       router.replace("/");
     };
 

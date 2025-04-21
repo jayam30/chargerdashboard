@@ -5,12 +5,12 @@
 // import WaveCharging from "../../../components/WaveCharging";
 // import { useEffect, useMemo, useState } from "react";
 // import { useRouter } from "next/navigation";
-// import { Poppins } from "next/font/google";
+// // import { Poppins } from "next/font/google";
 // import FODDialog from "../../../components/FODDialog";
 // import MissDialog from "../../../components/MissDialog";
 // import Image from "next/image";
 
-// const poppins = Poppins({ subsets: ["latin"], weight: ["500"] });
+// // const poppins = Poppins({ subsets: ["latin"], weight: ["500"] });
 
 // export default function SOCChargePage() {
 //   const router = useRouter();
@@ -20,10 +20,10 @@
 //   const [counter, setCounter] = useState(0);
 //   const [targetSOC, setTargetSOC] = useState(80); // Example target value
 
-//   const [isIssueDetected, setIsIssueDetected] = useState({
-//     isFOD: false,
-//     isMiss: false,
-//   });
+// //   const [isIssueDetected, setIsIssueDetected] = useState({
+// //     isFOD: false,
+// //     isMiss: false,
+// //   });
 
 //   useEffect(() => {
 //     const interval = setInterval(() => {
@@ -49,10 +49,10 @@
 
 //     if (isFOD || isMiss) {
 //       updateChargingStatus(false);
-//       setIsIssueDetected({ isFOD, isMiss });
+//     //   setIsIssueDetected({ isFOD, isMiss });
 //     } else if (isReceiverDetected && !isFOD && !isMiss) {
 //       updateChargingStatus(true);
-//       setIsIssueDetected({ isFOD: false, isMiss: false });
+//     //   setIsIssueDetected({ isFOD: false, isMiss: false });
 //     }
 //   }, [bmsData?.isFOD, bmsData?.isMiss, bmsData?.isReceiverCoilDetected, updateChargingStatus]);
 
@@ -148,3 +148,7 @@
 //     </div>
 //   );
 // }
+export default function Page() {
+    return <div>Hello from SoC Charge Page!</div>;
+  }
+  

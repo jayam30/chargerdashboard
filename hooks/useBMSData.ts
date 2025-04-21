@@ -346,6 +346,10 @@ export function useBMSData() {
     return bmsData.voltage * bmsData.current;
   }, [bmsData.voltage, bmsData.current]);
 
+
+  
+  
+
   return {
     bmsData,
     updateBMSData,
