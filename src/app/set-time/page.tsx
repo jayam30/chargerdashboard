@@ -489,7 +489,7 @@ import { Card, CardContent } from "../../../components/ui/card";
 import { useChargingStatus } from "../../../hooks/useChargingStatus";
 import { useTimerStatus } from "../../../hooks/useTimerStatus";
 
-export default function HomePage() {
+export default function SetTimePage() {
   const router = useRouter();
   const { updateChargingStatus } = useChargingStatus();
   const { setTimer } = useTimerStatus();

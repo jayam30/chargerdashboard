@@ -123,6 +123,61 @@
 
 // export default MissDialog;
 //ui 2
+// "use client";
+// import Image from "next/image";
+// import React, { useEffect, useState } from "react";
+// import { useBMSData } from "../hooks/useBMSData";
+// import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
+
+// const MissDialog = () => {
+//   const { bmsData } = useBMSData();
+//   const [isOpen, setIsOpen] = useState(false);
+
+//   useEffect(() => {
+//     setIsOpen(bmsData?.isMiss || false);
+//   }, [bmsData?.isMiss]);
+
+//   return (
+
+    
+//     <Dialog open={isOpen}>
+//       <DialogContent className="absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[800px] bg-neutral-800 backdrop-blur-sm border-none rounded-lg shadow-lg">
+//         <div className="flex flex-col items-center gap-4 py-6">
+//           <DialogHeader>
+//             <DialogTitle className="text-2xl font-bold text-white text-center">
+//               Misalignment Detected
+//             </DialogTitle>
+//             <div className="relative flex justify-center">
+//               <Image
+//                 src="/miss.png"
+//                 alt="Misalignment Detected"
+//                 width={200}
+//                 height={200}
+//                 className="object-contain"
+//               />
+//             </div>
+//           </DialogHeader>
+
+//           <div className="flex flex-col items-center gap-2 text-center">
+//             <DialogDescription className="text-xl font-semibold text-white">
+//               Misalignment DETECTED
+//             </DialogDescription>
+//             <DialogDescription className="text-lg text-white/90">
+//               The charging pad is misaligned.
+//               <br />
+//               Please adjust it to continue charging.
+//             </DialogDescription>
+//           </div>
+//         </div>
+//       </DialogContent>
+//     </Dialog>
+//   );
+// };
+
+// export default MissDialog;
+
+
+//
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -138,8 +193,11 @@ const MissDialog = () => {
   }, [bmsData?.isMiss]);
 
   return (
+
+    
     <Dialog open={isOpen}>
-      <DialogContent className="max-w-[400px] bg-neutral-800 backdrop-blur-sm border-none rounded-lg shadow-lg">
+      <DialogContent className="fixed inset-0 z-50 flex items-center justify-center bg-black
+">
         <div className="flex flex-col items-center gap-4 py-6">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-white text-center">

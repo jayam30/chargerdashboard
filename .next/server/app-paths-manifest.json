@@ -1,0 +1,7 @@
+{
+  "/select/page": "app/select/page.js",
+  "/page": "app/page.js",
+  "/done/page": "app/done/page.js",
+  "/park/page": "app/park/page.js",
+  "/charge/page": "app/charge/page.js"
+}

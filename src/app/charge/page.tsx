@@ -3239,88 +3239,851 @@
 // }
 ///last comment k upar wala comment shai hai
 
-"use client";
-import { motion } from "framer-motion";
-import { useChargingStatus } from "../../../hooks/useChargingStatus";
-import { useBMSData } from "../../../hooks/useBMSData";
-import { useTimerStatus } from "../../../hooks/useTimerStatus";
-import WaveCharging from "../../../components/WaveCharging";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Poppins } from "next/font/google";
-import FODDialog from "../../../components/FODDialog";
-import MissDialog from "../../../components/MissDialog";
+// "use client";
+// import { motion } from "framer-motion";
+// import { useChargingStatus, isChargingInitialized } from "../../../hooks/useChargingStatus";
+// import { useBMSData } from "../../../hooks/useBMSData";
+// import { useTimerStatus } from "../../../hooks/useTimerStatus";
+// import WaveCharging from "../../../components/WaveCharging";
+// import { useEffect, useMemo, useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { Poppins } from "next/font/google";
+// import FODDialog from "../../../components/FODDialog";
+// import MissDialog from "../../../components/MissDialog";
 
-import Image from "next/image";
+// import Image from "next/image";
 
-const poppins = Poppins({ subsets: ["latin"], weight: ["500"] });
+// const poppins = Poppins({ subsets: ["latin"], weight: ["500"] });
 
-export default function ChargePage() {
-  const router = useRouter();
-  const { updateChargingStatus } = useChargingStatus();
-  const [timerOver, setTimerOver] = useState(false);
+// export default function ChargePage() {
+//   const router = useRouter();
+//   const { updateChargingStatus } = useChargingStatus();
+//   const [timerOver, setTimerOver] = useState(false);
 
 
-  const { bmsData, chargingPower } = useBMSData();
-  const { endTime } = useTimerStatus();
+//   const { bmsData, chargingPower } = useBMSData();
+//   const { endTime } = useTimerStatus();
 
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-  const [energyConsumed, setEnergyConsumed] = useState(0);
+//   const [timeLeft, setTimeLeft] = useState({
+//     hours: 0,
+//     minutes: 0,
+//     seconds: 0,
+//   });
+//   const [energyConsumed, setEnergyConsumed] = useState(0);
 
-  useEffect(() => {
-    if (!endTime || !bmsData?.isReceiverCoilDetected) return;
+//   useEffect(() => {
+//     if (!endTime || !bmsData?.isReceiverCoilDetected) return;
   
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const remaining = Math.max(0, endTime - now);
+//     const interval = setInterval(() => {
+//       const now = Date.now();
+//       const remaining = Math.max(0, endTime - now);
   
-      setTimeLeft({
-        hours: Math.floor(remaining / (1000 * 60 * 60)),
-        minutes: Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((remaining % (1000 * 60)) / 1000),
-      });
+//       setTimeLeft({
+//         hours: Math.floor(remaining / (1000 * 60 * 60)),
+//         minutes: Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)),
+//         seconds: Math.floor((remaining % (1000 * 60)) / 1000),
+//       });
   
-      if (remaining <= 0) {
-        clearInterval(interval);
-        updateChargingStatus(false).then(() => {
-          router.push("/");
-        });
-      }
-    }, 1000);
+//       if (remaining <= 0) {
+//         clearInterval(interval);
+//         updateChargingStatus(false).then(() => {
+//           router.push("/");
+//         });
+//       }
+//     }, 1000);
   
-    return () => clearInterval(interval);
-  }, [endTime, updateChargingStatus, router, bmsData?.isReceiverCoilDetected]);
+//     return () => clearInterval(interval);
+//   }, [endTime, updateChargingStatus, router, bmsData?.isReceiverCoilDetected]);
   
 
-  useEffect(() => {
-    if (bmsData.isReceiverCoilDetected && bmsData.current > 0) {
-      const interval = setInterval(() => {
-        setEnergyConsumed((prev) => prev + chargingPower / 1000 / 3600);
-      }, 1000);
+//   useEffect(() => {
+//     if (bmsData.isReceiverCoilDetected && bmsData.current > 0) {
+//       const interval = setInterval(() => {
+//         setEnergyConsumed((prev) => prev + chargingPower / 1000 / 3600);
+//       }, 1000);
 
-      return () => clearInterval(interval);
-    }
-  }, [bmsData, chargingPower]);
+//       return () => clearInterval(interval);
+//     }
+//   }, [bmsData, chargingPower]);
 
  
   
   
 
-  const [isIssueDetected, setIsIssueDetected] = useState({
-    isFOD: false,
-    isMiss: false,
-  });
 
-  useEffect(() => {
-    if (timerOver) return; // ⬅️ Skip logic if timer is done
+
+//   const [isIssueDetected, setIsIssueDetected] = useState({
+//     isFOD: false,
+//     isMiss: false,
+//   });
+
+//   useEffect(() => {
+//     if (timerOver) return; // ⬅️ Skip logic if timer is done
   
-    const isFOD = bmsData?.isFOD;
-    const isMiss = bmsData?.isMiss;
-    const isReceiverDetected = bmsData?.isReceiverCoilDetected;
+//     const isFOD = bmsData?.isFOD;
+//     const isMiss = bmsData?.isMiss;
+//     const isReceiverDetected = bmsData?.isReceiverCoilDetected;
+  
+//     if (isFOD || isMiss) {
+//       updateChargingStatus(false);
+//       // setIsIssueDetected({ isFOD, isMiss });
+//       setIsIssueDetected({ isFOD: isFOD ?? false, isMiss: isMiss ?? false });
+
+//     } else if (isReceiverDetected && !isFOD && !isMiss) {
+//       updateChargingStatus(true);
+//       setIsIssueDetected({ isFOD: false, isMiss: false });
+//     }
+//   }, [
+//     bmsData?.isFOD,
+//     bmsData?.isMiss,
+//     bmsData?.isReceiverCoilDetected,
+//     updateChargingStatus,
+//     timerOver, // ⬅️ Include this in deps
+//   ]);
+  
+  
+
+//   const waveColor = useMemo(() => {
+//     const soc = bmsData?.SOC;
+
+//     if (soc >= 100) return "rgba(52, 199, 89, 0.7)";
+//     if (soc >= 75) return "rgba(0, 122, 255, 0.7)";
+//     if (soc >= 50) return "rgba(255, 204, 0, 0.7)";
+//     if (soc >= 25) return "rgba(255, 59, 48, 0.7)";
+//     return "rgba(255, 59, 48, 0.7)";
+//   }, [bmsData?.SOC]);
+
+  
+
+//   const [parkCountdown, setParkCountdown] = useState(60);
+
+//   useEffect(() => {
+//     let interval: NodeJS.Timeout;
+
+//     if (!bmsData?.isReceiverCoilDetected) {
+//       if (parkCountdown === 0) {
+//         // Countdown is over, redirect to home
+//         router.push("/");
+//         return;
+//       }
+
+//       // Start countdown
+//       interval = setInterval(() => {
+//         setParkCountdown((prev) => {
+//           if (prev <= 1) {
+//             clearInterval(interval);
+//             router.push("/");
+//             return 0;
+//           }
+//           return prev - 1;
+//         });
+//       }, 1000);
+//     } else {
+//       // Reset countdown if receiver coil is detected
+//       setParkCountdown(60);
+//     }
+
+//     return () => clearInterval(interval);
+//   }, [bmsData?.isReceiverCoilDetected, parkCountdown, router]);
+
+//   const formatTime = (value: number): string => {
+//     return value.toString().padStart(2, "0");
+//   };
+
+//   return (
+//     <div
+//       className="w-full h-screen overflow-hidden bg-black font-sans"
+//       style={{
+//         backgroundImage: "url(/main-bg.png)",
+//         backgroundSize: "cover",
+//         backgroundPosition: "center",
+//       }}
+//     >
+//       <div className="flex flex-col items-center justify-between h-full pb-6 pt-12">
+//         {/* Header section */}
+//         <div className="flex flex-col items-center w-full">
+//           <motion.div
+//             className="text-white/90 text-5xl font-medium tracking-wider mb-6"
+//             initial={{ opacity: 0, x: -20 }}
+//             animate={{ opacity: 1, x: 0 }}
+//             transition={{ duration: 0.5, delay: 0.6 }}
+//           >
+//             {/* <span className={`relative ${bmsData?.isReceiverCoilDetected ? "" : "text-white"}`}>
+//               {bmsData?.isReceiverCoilDetected ? (
+//                 bmsData?.current <= 0 ? "Charging Paused" : "Initializing Charging"
+//               ) : (
+//                 <div className="flex items-center gap-3">
+//                   <span>Park your vehicle</span>
+//                   <span className="text-red-400 font-mono bg-red-500/10 px-3 py-0.5 rounded-md border border-red-500/20">
+//                     {Math.floor(parkCountdown / 60)}:{(parkCountdown % 60).toString().padStart(2, "0")}
+//                   </span>
+//                 </div>
+//               )}
+//             </span> */}
+
+
+//           <span className={`relative ${bmsData?.isReceiverCoilDetected ? "" : "text-white"}`}>
+//             {bmsData?.isReceiverCoilDetected ? (
+//               isChargingInitialized ? (
+//                 bmsData?.current <= 0 ? (
+//                   "Charging Paused"
+//                 ) : (
+//                   "Charging"
+//                 )
+//               ) : (
+//                 "Initializing Charging"
+//               )
+//             ) : (
+//               <div className="flex items-center gap-3">
+//                 <span>Park your vehicle</span>
+//                 <span className="text-red-400 font-mono bg-red-500/10 px-3 py-0.5 rounded-md border border-red-500/20">
+//                   {Math.floor(parkCountdown / 60)}:{(parkCountdown % 60).toString().padStart(2, "0")}
+//                 </span>
+//               </div>
+//             )}
+//           </span>
+
+
+
+              
+
+
+
+
+
+
+            
+//           </motion.div>
+  
+//           {/* Charge percentage pill */}
+//           <motion.div
+//             className="inline-flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/5 shadow-lg shadow-cyan-500/10 mb-6"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 0.8 }}
+//           >
+//             <button
+//               onClick={() => {
+//                 updateChargingStatus(false);
+//                 router.push("/");
+//               }}
+//               className="text-white/90 text-sm font-medium flex items-center"
+//             >
+//               {bmsData?.SOC || 48}% Charged
+//             </button>
+//             <svg
+//               width="14"
+//               height="14"
+//               viewBox="0 0 24 24"
+//               fill="none"
+//               xmlns="http://www.w3.org/2000/svg"
+//               className="text-cyan-400"
+//             >
+//               <path
+//                 d="M13 2L4.09347 12.6879C3.74466 13.1064 3.57026 13.3157 3.56759 13.4925C3.56526 13.6461 3.63373 13.7923 3.75326 13.8889C3.89075 14 4.16318 14 4.70803 14H12L11 22L19.9065 11.3121C20.2553 10.8936 20.4297 10.6843 20.4324 10.5075C20.4347 10.3539 20.3663 10.2077 20.2467 10.1111C20.1092 10 19.8368 10 19.292 10H12L13 2Z"
+//                 stroke="currentColor"
+//                 strokeWidth="2"
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//               />
+//             </svg>
+//           </motion.div>
+//         </div>
+  
+//         {/* Alerts and Dialogs */}
+//         <div>
+//         {bmsData?.isFOD && <FODDialog />}
+//         {bmsData?.isMiss && <MissDialog />}
+//         </div>
+       
+  
+//         {/* Charging indicator and vehicle section */}
+//         <div className="flex flex-col items-center justify-center flex-grow">
+//           {/* Charging wave animation */}
+//           <div className="relative mb-8">
+//             <WaveCharging
+//               percentage={bmsData?.SOC || 48}
+//               waveColor={waveColor}
+//               backgroundColor="rgba(255, 255, 255, 0.1)"
+//               size={200}
+//             />
+//             <div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-medium">
+//               {bmsData?.SOC || 48}%
+//             </div>
+//           </div>
+  
+//           {/* Vehicle and charging pad */}
+//           <div className="relative flex flex-col items-center">
+//             <motion.div
+//               initial={{ x: 200 }}
+//               animate={{ x: 0 }}
+//               key={bmsData?.isReceiverCoilDetected ? "parked" : "not-parked"}
+//               transition={{
+//                 duration: 2,
+//                 type: "spring",
+//                 stiffness: 100,
+//                 damping: 20,
+//                 repeat: bmsData?.isReceiverCoilDetected ? 0 : Infinity,
+//                 repeatType: "reverse"
+//               }}
+//               className="mb-4"
+//             >
+//               <Image
+//                 src="/charge-bike.png"
+//                 alt="Electric scooter"
+//                 width={300}
+//                 height={180}
+//                 className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+//               />
+//             </motion.div>
+  
+//             <div className="relative">
+//               <Image
+//                 src="/charge-pad.png"
+//                 alt="Charger pad"
+//                 width={150}
+//                 height={20}
+//                 className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+//               />
+//               <div className="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping"></div>
+//             </div>
+//           </div>
+//         </div>
+  
+//         {/* Stats grid */}
+//         <div className="grid grid-cols-2 gap-4 w-full max-w-xl px-4 mt-8">
+//           <motion.div
+//             className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 1.0 }}
+//           >
+//             <span className="block">Energy:</span>
+//             <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
+//               {energyConsumed?.toFixed(5) || "0.00000"} kWh
+//             </span>
+//           </motion.div>
+  
+//           <motion.div
+//             className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 1.2 }}
+//           >
+//             <span className="block">Time Remaining:</span>
+//             <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
+//               {formatTime(timeLeft?.hours || 0)}:{formatTime(timeLeft?.minutes || 59)}:
+//               {formatTime(timeLeft?.seconds || 45)}
+//             </span>
+//           </motion.div>
+  
+//           <motion.div
+//             className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 1.4 }}
+//           >
+//             <span className="block">Charging Current:</span>
+//             <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
+//               {(bmsData?.current || 0).toFixed(2)} A
+//             </span>
+//           </motion.div>
+  
+//           <motion.div
+//             className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 1.6 }}
+//           >
+//             <span className="block">Power:</span>
+//             <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
+//               {((chargingPower || 0) / 1000).toFixed(1)} W
+//             </span>
+//           </motion.div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+//after app
+
+// "use client";
+// import { motion } from "framer-motion";
+// import { useChargingStatus, isChargingInitialized } from "../../../hooks/useChargingStatus";
+// import { useBMSData } from "../../../hooks/useBMSData";
+// import { useTimerStatus } from "../../../hooks/useTimerStatus";
+// import WaveCharging from "../../../components/WaveCharging";
+// import { useEffect, useMemo, useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { Poppins } from "next/font/google";
+// import FODDialog from "../../../components/FODDialog";
+// import MissDialog from "../../../components/MissDialog";
+
+// import Image from "next/image";
+
+// const poppins = Poppins({ subsets: ["latin"], weight: ["500"] });
+
+// export default function ChargePage() {
+//   const router = useRouter();
+//   const { updateChargingStatus, isChargingInitialized } = useChargingStatus();
+
+
+//   const [timerOver, setTimerOver] = useState(false);
+
+
+//   const { bmsData, chargingPower } = useBMSData();
+//   const { endTime } = useTimerStatus();
+
+//   const [timeLeft, setTimeLeft] = useState({
+//     hours: 0,
+//     minutes: 0,
+//     seconds: 0,
+//   });
+//   const [energyConsumed, setEnergyConsumed] = useState(0);
+
+//   useEffect(() => {
+//     if (!endTime || !bmsData?.isReceiverCoilDetected) return;
+  
+//     const interval = setInterval(() => {
+//       const now = Date.now();
+//       const remaining = Math.max(0, endTime - now);
+  
+//       setTimeLeft({
+//         hours: Math.floor(remaining / (1000 * 60 * 60)),
+//         minutes: Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)),
+//         seconds: Math.floor((remaining % (1000 * 60)) / 1000),
+//       });
+  
+//       if (remaining <= 0) {
+//         clearInterval(interval);
+//         updateChargingStatus(false).then(() => {
+//           router.push("/");
+//         });
+//       }
+//     }, 1000);
+  
+//     return () => clearInterval(interval);
+//   }, [endTime, updateChargingStatus, router, bmsData?.isReceiverCoilDetected]);
+  
+
+//   useEffect(() => {
+//     if (bmsData.isReceiverCoilDetected && bmsData.current > 0) {
+//       const interval = setInterval(() => {
+//         setEnergyConsumed((prev) => prev + chargingPower / 1000 / 3600);
+//       }, 1000);
+
+//       return () => clearInterval(interval);
+//     }
+//   }, [bmsData, chargingPower]);
+
+ 
+  
+  
+
+
+
+//   const [isIssueDetected, setIsIssueDetected] = useState({
+//     isFOD: false,
+//     isMiss: false,
+//   });
+
+//   useEffect(() => {
+//     if (timerOver) return; // ⬅️ Skip logic if timer is done
+  
+//     const isFOD = bmsData?.isFOD;
+//     const isMiss = bmsData?.isMiss;
+//     const isReceiverDetected = bmsData?.isReceiverCoilDetected;
+  
+//     if (isFOD || isMiss) {
+//       updateChargingStatus(false);
+//       // setIsIssueDetected({ isFOD, isMiss });
+//       setIsIssueDetected({ isFOD: isFOD ?? false, isMiss: isMiss ?? false });
+
+//     } else if (isReceiverDetected && !isFOD && !isMiss) {
+//       updateChargingStatus(true);
+//       setIsIssueDetected({ isFOD: false, isMiss: false });
+//     }
+//   }, [
+//     bmsData?.isFOD,
+//     bmsData?.isMiss,
+//     bmsData?.isReceiverCoilDetected,
+//     updateChargingStatus,
+//     timerOver, // ⬅️ Include this in deps
+//   ]);
+  
+  
+
+//   const waveColor = useMemo(() => {
+//     const soc = bmsData?.SOC;
+
+//     if (soc >= 100) return "rgba(52, 199, 89, 0.7)";
+//     if (soc >= 75) return "rgba(0, 122, 255, 0.7)";
+//     if (soc >= 50) return "rgba(255, 204, 0, 0.7)";
+//     if (soc >= 25) return "rgba(255, 59, 48, 0.7)";
+//     return "rgba(255, 59, 48, 0.7)";
+//   }, [bmsData?.SOC]);
+
+  
+
+//   const [parkCountdown, setParkCountdown] = useState(60);
+
+//   useEffect(() => {
+//     let interval: NodeJS.Timeout;
+
+//     if (!bmsData?.isReceiverCoilDetected) {
+//       if (parkCountdown === 0) {
+//         // Countdown is over, redirect to home
+//         router.push("/");
+//         return;
+//       }
+
+//       // Start countdown
+//       interval = setInterval(() => {
+//         setParkCountdown((prev) => {
+//           if (prev <= 1) {
+//             clearInterval(interval);
+//             router.push("/");
+//             return 0;
+//           }
+//           return prev - 1;
+//         });
+//       }, 1000);
+//     } else {
+//       // Reset countdown if receiver coil is detected
+//       setParkCountdown(60);
+//     }
+
+//     return () => clearInterval(interval);
+//   }, [bmsData?.isReceiverCoilDetected, parkCountdown, router]);
+
+//   const formatTime = (value: number): string => {
+//     return value.toString().padStart(2, "0");
+//   };
+
+//   const chargingStatusText = useMemo(() => {
+//     if (!bmsData?.isReceiverCoilDetected) {
+//       return (
+//         <div className="flex items-center gap-3">
+//           <span>Park your vehicle</span>
+//           <span className="text-red-400 font-mono bg-red-500/10 px-3 py-0.5 rounded-md border border-red-500/20">
+//             {Math.floor(parkCountdown / 60)}:{(parkCountdown % 60).toString().padStart(2, "0")}
+//           </span>
+//         </div>
+//       );
+//     }
+  
+//     if (!isChargingInitialized) return "Initializing Charging";
+//     if (bmsData.current <= 0) return "Charging Paused";
+//     return "Charging";
+//   }, [bmsData, parkCountdown, isChargingInitialized]);
+  
+
+//   return (
+//     <div
+//       className="w-full h-screen overflow-hidden bg-black font-sans"
+//       style={{
+//         backgroundImage: "url(/main-bg.png)",
+//         backgroundSize: "cover",
+//         backgroundPosition: "center",
+//       }}
+//     >
+//       <div className="flex flex-col items-center justify-between h-full pb-6 pt-12">
+//         {/* Header section */}
+//         <div className="flex flex-col items-center w-full">
+//           <motion.div
+//             className="text-white/90 text-5xl font-medium tracking-wider mb-6"
+//             initial={{ opacity: 0, x: -20 }}
+//             animate={{ opacity: 1, x: 0 }}
+//             transition={{ duration: 0.5, delay: 0.6 }}
+//           >
+//             <span className={`relative ${bmsData?.isReceiverCoilDetected ? "" : "text-white"}`}>
+//               {bmsData?.isReceiverCoilDetected ? (
+//                 bmsData?.current <= 0 ? "Charging Paused" : "Initializing Charging"
+//               ) : (
+//                 <div className="flex items-center gap-3">
+//                   <span>Park your vehicle</span>
+//                   <span className="text-red-400 font-mono bg-red-500/10 px-3 py-0.5 rounded-md border border-red-500/20">
+//                     {Math.floor(parkCountdown / 60)}:{(parkCountdown % 60).toString().padStart(2, "0")}
+//                   </span>
+//                 </div>
+//               )}
+//             </span>
+
+
+//           <span className={`relative ${bmsData?.isReceiverCoilDetected ? "" : "text-white"}`}>
+//             {bmsData?.isReceiverCoilDetected ? (
+//               isChargingInitialized ? (
+//                 bmsData?.current <= 0 ? (
+//                   "Charging Paused"
+//                 ) : (
+//                   "Charging"
+//                 )
+//               ) : (
+//                 "Initializing Charging"
+//               )
+//             ) : (
+//               <div className="flex items-center gap-3">
+//                 <span>Park your vehicle</span>
+//                 <span className="text-red-400 font-mono bg-red-500/10 px-3 py-0.5 rounded-md border border-red-500/20">
+//                   {Math.floor(parkCountdown / 60)}:{(parkCountdown % 60).toString().padStart(2, "0")}
+//                 </span>
+//               </div>
+//             )}
+//           </span>
+//           <span className="relative">{chargingStatusText}</span>
+
+
+
+
+            
+//           </motion.div>
+  
+//           {/* Charge percentage pill */}
+//           <motion.div
+//             className="inline-flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/5 shadow-lg shadow-cyan-500/10 mb-6"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 0.8 }}
+//           >
+//             <button
+//               onClick={() => {
+//                 updateChargingStatus(false);
+//                 router.push("/");
+//               }}
+//               className="text-white/90 text-sm font-medium flex items-center"
+//             >
+//               {bmsData?.SOC || 48}% Charged
+//             </button>
+//             <svg
+//               width="14"
+//               height="14"
+//               viewBox="0 0 24 24"
+//               fill="none"
+//               xmlns="http://www.w3.org/2000/svg"
+//               className="text-cyan-400"
+//             >
+//               <path
+//                 d="M13 2L4.09347 12.6879C3.74466 13.1064 3.57026 13.3157 3.56759 13.4925C3.56526 13.6461 3.63373 13.7923 3.75326 13.8889C3.89075 14 4.16318 14 4.70803 14H12L11 22L19.9065 11.3121C20.2553 10.8936 20.4297 10.6843 20.4324 10.5075C20.4347 10.3539 20.3663 10.2077 20.2467 10.1111C20.1092 10 19.8368 10 19.292 10H12L13 2Z"
+//                 stroke="currentColor"
+//                 strokeWidth="2"
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//               />
+//             </svg>
+//           </motion.div>
+//         </div>
+  
+//         {/* Alerts and Dialogs */}
+//         <div>
+//         {bmsData?.isFOD && <FODDialog />}
+//         {bmsData?.isMiss && <MissDialog />}
+//         </div>
+       
+  
+//         {/* Charging indicator and vehicle section */}
+//         <div className="flex flex-col items-center justify-center flex-grow">
+//           {/* Charging wave animation */}
+//           <div className="relative mb-8">
+//             <WaveCharging
+//               percentage={bmsData?.SOC || 48}
+//               waveColor={waveColor}
+//               backgroundColor="rgba(255, 255, 255, 0.1)"
+//               size={200}
+//             />
+//             <div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-medium">
+//               {bmsData?.SOC || 48}%
+//             </div>
+//           </div>
+  
+//           {/* Vehicle and charging pad */}
+//           <div className="relative flex flex-col items-center">
+//             <motion.div
+//               initial={{ x: 200 }}
+//               animate={{ x: 0 }}
+//               key={bmsData?.isReceiverCoilDetected ? "parked" : "not-parked"}
+//               transition={{
+//                 duration: 2,
+//                 type: "spring",
+//                 stiffness: 100,
+//                 damping: 20,
+//                 repeat: bmsData?.isReceiverCoilDetected ? 0 : Infinity,
+//                 repeatType: "reverse"
+//               }}
+//               className="mb-4"
+//             >
+//               <Image
+//                 src="/charge-bike.png"
+//                 alt="Electric scooter"
+//                 width={300}
+//                 height={180}
+//                 className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+//               />
+//             </motion.div>
+  
+//             <div className="relative">
+//               <Image
+//                 src="/charge-pad.png"
+//                 alt="Charger pad"
+//                 width={150}
+//                 height={20}
+//                 className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+//               />
+//               <div className="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping"></div>
+//             </div>
+//           </div>
+//         </div>
+  
+//         {/* Stats grid */}
+//         <div className="grid grid-cols-2 gap-4 w-full max-w-xl px-4 mt-8">
+//           <motion.div
+//             className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 1.0 }}
+//           >
+//             <span className="block">Energy:</span>
+//             <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
+//               {energyConsumed?.toFixed(5) || "0.00000"} kWh
+//             </span>
+//           </motion.div>
+  
+//           <motion.div
+//             className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 1.2 }}
+//           >
+//             <span className="block">Time Remaining:</span>
+//             <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
+//               {formatTime(timeLeft?.hours || 0)}:{formatTime(timeLeft?.minutes || 0)}:
+//               {formatTime(timeLeft?.seconds || 0)}
+//             </span>
+//           </motion.div>
+  
+//           <motion.div
+//             className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 1.4 }}
+//           >
+//             <span className="block">Charging Current:</span>
+//             <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
+//               {(bmsData?.current || 0).toFixed(2)} A
+//             </span>
+//           </motion.div>
+  
+//           <motion.div
+//             className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 1.6 }}
+//           >
+//             <span className="block">Power:</span>
+//             <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
+//               {((chargingPower || 0) / 1000).toFixed(1)} W
+//             </span>
+//           </motion.div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+//after final fix
+"use client";
+import { motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useChargingStatus } from "../../../hooks/useChargingStatus";
+import { useBMSData } from "../../../hooks/useBMSData";
+import { useTimerStatus } from "../../../hooks/useTimerStatus";
+import WaveCharging from "../../../components/WaveCharging";
+import FODDialog from "../../../components/FODDialog";
+import MissDialog from "../../../components/MissDialog";
+import Image from "next/image";
+// const poppins = Poppins({ subsets: ["latin"], weight: ["500"] });
+
+export default function ChargePage() {
+  const router = useRouter();
+  const { updateChargingStatus, isChargingInitialized } = useChargingStatus();
+  const { bmsData, chargingPower } = useBMSData();
+  const { endTime } = useTimerStatus();
+
+
+  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
+  const [energyConsumed, setEnergyConsumed] = useState(0);
+  const [parkCountdown, setParkCountdown] = useState(60);
+  const parkCountdownRef = useRef(60);
+  const [timerOver, setTimerOver] = useState(false);
+  const [isIssueDetected, setIsIssueDetected] = useState({ isFOD: false, isMiss: false });
+
+  // Timer for session
+  useEffect(() => {
+    console.log("🔥 useEffect triggered");
+    console.log("🧪 endTime:", endTime);
+    console.log("🧪 bmsData?.isReceiverCoilDetected:", bmsData?.isReceiverCoilDetected);
+  
+    if (!endTime || !bmsData?.isReceiverCoilDetected) {
+      console.log("🚫 Skipping timer setup due to missing conditions");
+      return;
+    }
+  
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const remaining = Math.max(0, endTime - now);
+  
+      console.log("⏱️ Timer tick:", new Date().toLocaleTimeString(), "Remaining:", remaining);
+  
+      setTimeLeft({
+        hours: Math.floor(remaining / 3600000),
+        minutes: Math.floor((remaining % 3600000) / 60000),
+        seconds: Math.floor((remaining % 60000) / 1000),
+      });
+  
+      if (remaining <= 0) {
+        clearInterval(interval);
+        setTimerOver(true); //change
+  
+        updateChargingStatus(false)
+          .catch((err) => console.error("❌ Failed to update charging status:", err))
+          .finally(() => {
+            console.log("✅ Timer ended. Redirecting to /done");
+            router.replace("/done");
+          });
+      }
+    }, 1000);
+  
+    return () => {
+      console.log("🧹 Cleaning up timer interval");
+      clearInterval(interval);
+    };
+  }, [endTime, updateChargingStatus, router, bmsData?.isReceiverCoilDetected]);
+  
+  
+ 
+  
+  // Energy calculation
+  useEffect(() => {
+    if (bmsData?.isReceiverCoilDetected && bmsData?.current > 0) {
+      const interval = setInterval(() => {
+        setEnergyConsumed((prev) => prev + chargingPower / 1000 / 3600);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+    // }, [bmsData?.isReceiverCoilDetected, bmsData?.current, chargingPower]);
+  }, [bmsData, chargingPower]);
+
+  // Issue Detection
+
+  
+  useEffect(() => {
+    if (timerOver) return;
+  
+    const isFOD = !!bmsData?.isFOD;
+    const isMiss = !!bmsData?.isMiss;
+    const isReceiverDetected = !!bmsData?.isReceiverCoilDetected;
   
     if (isFOD || isMiss) {
       updateChargingStatus(false);
@@ -3334,235 +4097,161 @@ export default function ChargePage() {
     bmsData?.isMiss,
     bmsData?.isReceiverCoilDetected,
     updateChargingStatus,
-    timerOver, // ⬅️ Include this in deps
+    timerOver,
   ]);
   
+
+  // Park countdown handler
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
   
+    if (!bmsData?.isReceiverCoilDetected) {
+      interval = setInterval(() => {
+        parkCountdownRef.current -= 1;
+        setParkCountdown(parkCountdownRef.current);
+  
+        if (parkCountdownRef.current <= 0) {
+          clearInterval(interval!);
+          router.push("/");
+        }
+      }, 1000);
+    } else {
+      parkCountdownRef.current = 60;
+      setParkCountdown(60);
+    }
+  
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [bmsData?.isReceiverCoilDetected, router]);
+  // useEffect(() => {
+  //   let interval: NodeJS.Timeout;
+
+  //   if (!bmsData?.isReceiverCoilDetected) {
+  //     if (parkCountdown === 0) {
+  //       // Countdown is over, redirect to home
+  //       router.push("/");
+  //       return;
+  //     }
+
+  //     // Start countdown
+  //     interval = setInterval(() => {
+  //       setParkCountdown((prev) => {
+  //         if (prev <= 1) {
+  //           clearInterval(interval);
+  //           router.push("/");
+  //           return 0;
+  //         }
+  //         return prev - 1;
+  //       });
+  //     }, 1000);
+  //   } else {
+  //     // Reset countdown if receiver coil is detected
+  //     setParkCountdown(60);
+  //   }
+
+  //   return () => clearInterval(interval);
+  // }, [bmsData?.isReceiverCoilDetected, parkCountdown, router]);
+
+  const formatTime = (val: number) => val.toString().padStart(2, "0");
 
   const waveColor = useMemo(() => {
-    const soc = bmsData?.SOC;
-
+    const soc = bmsData?.SOC ?? 0;
     if (soc >= 100) return "rgba(52, 199, 89, 0.7)";
     if (soc >= 75) return "rgba(0, 122, 255, 0.7)";
     if (soc >= 50) return "rgba(255, 204, 0, 0.7)";
-    if (soc >= 25) return "rgba(255, 59, 48, 0.7)";
     return "rgba(255, 59, 48, 0.7)";
   }, [bmsData?.SOC]);
 
-  
-
-  const [parkCountdown, setParkCountdown] = useState(60);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
+  const chargingStatusText = useMemo(() => {
     if (!bmsData?.isReceiverCoilDetected) {
-      if (parkCountdown === 0) {
-        // Countdown is over, redirect to home
-        router.push("/");
-        return;
-      }
-
-      // Start countdown
-      interval = setInterval(() => {
-        setParkCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            router.push("/");
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      // Reset countdown if receiver coil is detected
-      setParkCountdown(60);
+      return (
+        <div className="flex items-center gap-3">
+          <span>Park your vehicle</span>
+          <span className="text-red-400 font-mono bg-red-500/10 px-3 py-0.5 rounded-md border border-red-500/20">
+            {Math.floor(parkCountdown / 60)}:{formatTime(parkCountdown % 60)}
+          </span>
+        </div>
+      );
     }
-
-    return () => clearInterval(interval);
-  }, [bmsData?.isReceiverCoilDetected, parkCountdown, router]);
-
-  const formatTime = (value: number): string => {
-    return value.toString().padStart(2, "0");
-  };
+    if (!isChargingInitialized) return "Initializing Charging";
+    if (bmsData?.current <= 0) return "Charging Paused";
+    return "Charging";
+  }, [bmsData, isChargingInitialized, parkCountdown]);
 
   return (
-    <div
-      className="w-full h-screen overflow-hidden bg-black font-sans"
-      style={{
-        backgroundImage: "url(/main-bg.png)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="w-full h-screen overflow-hidden bg-black font-sans" style={{ backgroundImage: "url(/main-bg.png)", backgroundSize: "cover", backgroundPosition: "center" }}>
       <div className="flex flex-col items-center justify-between h-full pb-6 pt-12">
-        {/* Header section */}
-        <div className="flex flex-col items-center w-full">
-          <motion.div
-            className="text-white/90 text-5xl font-medium tracking-wider mb-6"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
+        {/* Header */}
+        <motion.div className="text-white/90 text-5xl font-medium tracking-wider mb-6" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.6 }}>
+          {chargingStatusText}
+        </motion.div>
+
+        {/* SOC pill */}
+        <motion.div className="inline-flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/5 shadow-lg mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.8 }}>
+          <button
+            onClick={() => {
+              updateChargingStatus(false);
+              router.push("/");
+            }}
+            className="text-white/90 text-sm font-medium flex items-center"
           >
-            <span className={`relative ${bmsData?.isReceiverCoilDetected ? "" : "text-white"}`}>
-              {bmsData?.isReceiverCoilDetected ? (
-                bmsData?.current <= 0 ? "Charging Paused" : "Initializing Charging"
-              ) : (
-                <div className="flex items-center gap-3">
-                  <span>Park your vehicle</span>
-                  <span className="text-red-400 font-mono bg-red-500/10 px-3 py-0.5 rounded-md border border-red-500/20">
-                    {Math.floor(parkCountdown / 60)}:{(parkCountdown % 60).toString().padStart(2, "0")}
-                  </span>
-                </div>
-              )}
-            </span>
-          </motion.div>
-  
-          {/* Charge percentage pill */}
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/5 shadow-lg shadow-cyan-500/10 mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-          >
-            <button
-              onClick={() => {
-                updateChargingStatus(false);
-                router.push("/");
-              }}
-              className="text-white/90 text-sm font-medium flex items-center"
-            >
-              {bmsData?.SOC || 48}% Charged
-            </button>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="text-cyan-400"
-            >
-              <path
-                d="M13 2L4.09347 12.6879C3.74466 13.1064 3.57026 13.3157 3.56759 13.4925C3.56526 13.6461 3.63373 13.7923 3.75326 13.8889C3.89075 14 4.16318 14 4.70803 14H12L11 22L19.9065 11.3121C20.2553 10.8936 20.4297 10.6843 20.4324 10.5075C20.4347 10.3539 20.3663 10.2077 20.2467 10.1111C20.1092 10 19.8368 10 19.292 10H12L13 2Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </motion.div>
-        </div>
-  
-        {/* Alerts and Dialogs */}
+            {bmsData?.SOC ?? 48}% Charged
+          </button>
+        </motion.div>
+
+        {/* Alerts */}
         <div>
         {bmsData?.isFOD && <FODDialog />}
         {bmsData?.isMiss && <MissDialog />}
         </div>
-       
-  
-        {/* Charging indicator and vehicle section */}
+
+        {/* Charging animation */}
         <div className="flex flex-col items-center justify-center flex-grow">
-          {/* Charging wave animation */}
           <div className="relative mb-8">
-            <WaveCharging
-              percentage={bmsData?.SOC || 48}
-              waveColor={waveColor}
-              backgroundColor="rgba(255, 255, 255, 0.1)"
-              size={200}
-            />
+            <WaveCharging percentage={bmsData?.SOC || 48} waveColor={waveColor} backgroundColor="rgba(255, 255, 255, 0.1)" size={200} />
             <div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-medium">
-              {bmsData?.SOC || 48}%
+              {bmsData?.SOC ?? 48}%
             </div>
           </div>
-  
-          {/* Vehicle and charging pad */}
+
+          {/* Vehicle + Pad */}
           <div className="relative flex flex-col items-center">
             <motion.div
               initial={{ x: 200 }}
               animate={{ x: 0 }}
-              key={bmsData?.isReceiverCoilDetected ? "parked" : "not-parked"}
-              transition={{
-                duration: 2,
-                type: "spring",
-                stiffness: 100,
-                damping: 20,
-                repeat: bmsData?.isReceiverCoilDetected ? 0 : Infinity,
-                repeatType: "reverse"
-              }}
+              key={bmsData?.isReceiverCoilDetected ? "detected" : "not-detected"}
+              transition={{ duration: 2, type: "spring", stiffness: 100, damping: 20, repeat: bmsData?.isReceiverCoilDetected ? 0 : Infinity, repeatType: "reverse" }}
               className="mb-4"
             >
-              <Image
-                src="/charge-bike.png"
-                alt="Electric scooter"
-                width={300}
-                height={180}
-                className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]"
-              />
+              <Image src="/charge-bike.png" alt="Electric scooter" width={300} height={180} className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]" />
             </motion.div>
-  
             <div className="relative">
-              <Image
-                src="/charge-pad.png"
-                alt="Charger pad"
-                width={150}
-                height={20}
-                className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]"
-              />
-              <div className="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping"></div>
+              <Image src="/charge-pad.png" alt="Charger pad" width={150} height={20} className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]" />
+              <div className="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping" />
             </div>
           </div>
         </div>
-  
-        {/* Stats grid */}
+
+        {/* Stats */}
         <div className="grid grid-cols-2 gap-4 w-full max-w-xl px-4 mt-8">
-          <motion.div
-            className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.0 }}
-          >
-            <span className="block">Energy:</span>
-            <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
-              {energyConsumed?.toFixed(5) || "0.00000"} kWh
-            </span>
-          </motion.div>
-  
-          <motion.div
-            className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
-          >
-            <span className="block">Time Remaining:</span>
-            <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
-              {formatTime(timeLeft?.hours || 0)}:{formatTime(timeLeft?.minutes || 59)}:
-              {formatTime(timeLeft?.seconds || 45)}
-            </span>
-          </motion.div>
-  
-          <motion.div
-            className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.4 }}
-          >
-            <span className="block">Charging Current:</span>
-            <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
-              {(bmsData?.current || 0).toFixed(2)} A
-            </span>
-          </motion.div>
-  
-          <motion.div
-            className="group shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset] px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium w-full text-center hover:shadow-[0_0_0_1px_rgba(6,182,212,0.2)_inset] transition-all duration-300 hover:bg-black/30"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.6 }}
-          >
-            <span className="block">Power:</span>
-            <span className="group-hover:text-cyan-400/90 transition-colors duration-300">
-              {((chargingPower || 0) / 1000).toFixed(1)} W
-            </span>
-          </motion.div>
+          {[
+            { label: "Energy", value: `${energyConsumed.toFixed(5)} kWh` },
+            { label: "Time Remaining", value: `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}` },
+            { label: "Charging Current", value: `${(bmsData?.current ?? 0).toFixed(2)} A` },
+            { label: "Power", value: `${((chargingPower ?? 0) / 1000).toFixed(1)} W` },
+          ].map((stat, idx) => (
+            <motion.div
+              key={stat.label}
+              className="group px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium text-center hover:bg-black/30 transition-all duration-300"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1 + idx * 0.2 }}
+            >
+              <span className="block">{stat.label}:</span>
+              <span className="group-hover:text-cyan-400/90 transition-colors duration-300">{stat.value}</span>
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>
