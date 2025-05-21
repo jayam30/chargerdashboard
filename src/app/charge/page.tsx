@@ -4209,10 +4209,12 @@ export default function ChargePage() {
         {/* Charging animation */}
         <div className="flex flex-col items-center justify-center flex-grow">
           <div className="relative mb-8">
-            <WaveCharging percentage={bmsData?.SOC || 48} waveColor={waveColor} backgroundColor="rgba(255, 255, 255, 0.1)" size={200} />
-            <div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-medium">
+            {/* <WaveCharging percentage={bmsData?.SOC || 48} waveColor={waveColor} backgroundColor="rgba(255, 255, 255, 0.1)" size={200} /> */}
+          <WaveCharging safePercentag={bmsData?.SOC ?? 48} />
+
+            {/* <div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-medium">
               {bmsData?.SOC ?? 48}%
-            </div>
+            </div> */}
           </div>
 
           {/* Vehicle + Pad */}

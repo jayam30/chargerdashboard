@@ -1,8 +1,8 @@
+
 // "use client";
-// import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect, useMemo } from "react";
 // import { Inter } from "next/font/google";
-
-
+// import { Zap } from "lucide-react";
 // const interThin = Inter({
 //   subsets: ["latin"],
 //   weight: ["200"],
@@ -10,413 +10,523 @@
 // });
 
 
+// interface WaveChargingProps {
+//   percentage?: number;
+//   waveColor?: string;
+//   backgroundColor?: string;
+//   size?: number;
+// }
 
-// const WaveCharging = ({ isChargeInit = true, percentage = 0 }) => {
+// const WaveCharging = ({
+//   percentage = 0,
+//   waveColor = "rgba(0, 123, 255, 0.7)",
+//   backgroundColor = "rgba(220, 220, 220, 0.2)",
+//   size = 160
+// }: WaveChargingProps) => {
 //   const [phase, setPhase] = useState(0);
-//   const [hoverState, setHoverState] = useState(false);
+//   const clampedPercentage = Math.min(100, Math.max(0, percentage));
 
+
+//   // Smoother animation using requestAnimationFrame
 //   useEffect(() => {
-//     const interval = setInterval(() => {
-//       setPhase((prev) => (prev + 1) % 360);
-//     }, 20);
-//     return () => clearInterval(interval);
+//     let animationFrameId: number;
+//     let lastTime = 0;
+//     const fps = 30; // Target 30fps for smoother animation
+//     const interval = 1000 / fps;
+   
+   
+
+
+//     const animate = (time: number) => {
+//       if (time - lastTime > interval) {
+//         setPhase((prev) => (prev + 2) % 360); // Slightly faster phase change
+//         lastTime = time;
+//       }
+//       animationFrameId = requestAnimationFrame(animate);
+//     };
+
+//     animationFrameId = requestAnimationFrame(animate);
+//     return () => cancelAnimationFrame(animationFrameId);
 //   }, []);
 
-//   // Enhanced color function with more vibrant colors and transitions
-//   const getCurrentColor = (percent: number) => {
-//     if (percent <= 33) {
-//       // Red to Blue (0-33%)
-//       const ratio = percent / 33;
-//       return {
-//         main: `rgb(255, ${Math.round(20 + ratio * 20)}, ${Math.round(
-//           20 + ratio * 200
-//         )})`,
-//         glow: `rgb(255, ${Math.round(ratio * 50)}, ${Math.round(ratio * 255)})`,
-//         accent: `rgb(255, ${Math.round(50 + ratio * 50)}, ${Math.round(
-//           100 + ratio * 155
-//         )})`,
-//         opacity: 1,
-//       };
-//     } else if (percent <= 66) {
-//       // Blue to Green (33-66%)
-//       const ratio = (percent - 33) / 33;
-//       return {
-//         main: `rgb(${Math.round(255 - ratio * 200)}, ${Math.round(
-//           40 + ratio * 215
-//         )}, ${Math.round(220 - ratio * 100)})`,
-//         glow: `rgb(${Math.round(50 - ratio * 50)}, ${Math.round(
-//           50 + ratio * 205
-//         )}, 255)`,
-//         accent: `rgb(${Math.round(100 - ratio * 100)}, ${Math.round(
-//           150 + ratio * 105
-//         )}, 255)`,
-//         opacity: 1,
-//       };
-//     } else {
-//       // Green (66-100%)
-//       const ratio = (percent - 66) / 34;
-//       return {
-//         main: `rgb(${Math.round(55 - ratio * 20)}, 255, ${Math.round(
-//           120 + ratio * 20
-//         )})`,
-//         glow: `rgb(0, 255, ${Math.round((1 - ratio) * 255)})`,
-//         accent: `rgb(${Math.round(50 - ratio * 50)}, 255, ${Math.round(
-//           150 + ratio * 105
-//         )})`,
-//         opacity: 1,
-//       };
-//     }
-//   };
+//   // Dynamic wave amplitude based on charging percentage
+//   const waveAmplitude = useMemo(() => {
+//     return clampedPercentage > 90 ? 1 : clampedPercentage > 50 ? 2 : 3;
+//   }, [clampedPercentage]);
 
-//   const colors = getCurrentColor(percentage);
+//   // Memoized wave path for better performance
+//   const wavePath = useMemo(() => {
+//     const yPos = 100 - clampedPercentage;
+//     return `M0 ${yPos}
+//             Q20 ${yPos + Math.sin((phase * Math.PI) / 180) * waveAmplitude}
+//             40 ${yPos}
+//             T100 ${yPos}
+//             V100 H0 Z`;
+//   }, [phase, clampedPercentage, waveAmplitude]);
 
 //   return (
-//     <div className="flex items-center justify-center ">
-//       <div
-//         className="relative w-44 h-44 transition-transform duration-300"
-//         style={{ transform: hoverState ? "scale(1.05)" : "scale(1)" }}
-//         onMouseEnter={() => setHoverState(true)}
-//         onMouseLeave={() => setHoverState(false)}
+//     <div
+//       className="relative flex items-center justify-center rounded-full overflow-hidden"
+//       style={{
+//         width: `${size}px`,
+//         height: `${size}px`,
+//         backgroundColor,
+//         boxShadow: `0px 0px 15px ${waveColor}`,
+//       }}
+//       role="progressbar"
+//       aria-valuenow={clampedPercentage}
+//       aria-valuemin={0}
+//       aria-valuemax={100}
+//     >
+//       <svg
+//         className="absolute inset-0 w-full h-full"
+//         viewBox="0 0 100 100"
+//         preserveAspectRatio="none"
+//         aria-hidden="true"
 //       >
-//         {/* Ultra Glow Effects */}
-//         <div
-//           className="absolute -inset-6 rounded-full opacity-20 blur-2xl transition-all duration-300"
-//           style={{
-//             background: `
-//               radial-gradient(circle at center,
-//                 ${colors.glow} 0%,
-//                 ${colors.accent}50 30%,
-//                 transparent 70%
-//               )
-//             `,
-//             transform: hoverState ? "scale(1.1)" : "scale(1)",
-//           }}
+//         <path
+//           fill={waveColor}
+//           d={wavePath}
 //         />
-//         <div
-//           className="absolute -inset-4 rounded-full opacity-30 blur-xl"
-//           style={{
-//             background: `radial-gradient(circle at center, ${colors.glow}, transparent 70%)`,
-//           }}
-//         />
-         
-//         {/* Main container with premium border effect */}
-//         <div className="absolute inset-0 rounded-full backdrop-blur-sm">
-//           {/* Animated border */}
-//           <div
-//             className="absolute -inset-0.5 rounded-full opacity-50"
-//             style={{
-//               background: `
-//                 linear-gradient(${phase}deg,
-//                   transparent,
-//                   ${colors.glow}50,
-//                   ${colors.accent}50,
-//                   transparent
-//                 )
-//               `,
-//             }}
-//           />
+//       </svg>
 
-//           <div
-//             className="absolute inset-px rounded-full overflow-hidden"
-//             style={{ background: "rgba(0, 0, 0, 0.2)" }}
-//           >
-//             {/* SVG Wave Animation */}
-//             <svg
-//               className="absolute inset-0 w-full h-full"
-//               viewBox="0 0 100 100"
-//               preserveAspectRatio="none"
-//             >
-//               <defs>
-//                 <linearGradient id="waveGradient" x1="0" x2="0" y1="0" y2="1">
-//                   <stop
-//                     offset="0%"
-//                     stopColor={colors.accent}
-//                     stopOpacity="0.8"
-//                   />
-//                   <stop
-//                     offset="100%"
-//                     stopColor={colors.main}
-//                     stopOpacity="0.9"
-//                   />
-//                 </linearGradient>
-//                 <filter id="glow">
-//                   <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-//                   <feMerge>
-//                     <feMergeNode in="coloredBlur" />
-//                     <feMergeNode in="SourceGraphic" />
-//                   </feMerge>
-//                 </filter>
-//                 <filter id="turbulence">
-//                   <feTurbulence
-//                     baseFrequency="0.02"
-//                     numOctaves="3"
-//                     seed={phase}
-//                   />
-//                   <feDisplacementMap in="SourceGraphic" scale="5" />
-//                 </filter>
-//               </defs>
-
-//               {/* Background wave layer */}
-//               <path
-//                 fill={colors.main}
-//                 opacity="0.2"
-//                 filter="url(#glow)"
-//                 d={`
-//                   M 0 ${100 - percentage - 2}
-//                   Q 15 ${100 - percentage + Math.sin(phase * 0.08) * 12}
-//                     35 ${100 - percentage - 2}
-//                     T 65 ${100 - percentage - 2}
-//                     T 100 ${100 - percentage - 2}
-//                   V 100
-//                   H 0
-//                   Z
-//                 `}
-//               />
-
-//               {/* Multiple wave layers with different phases and amplitudes */}
-//               {[...Array(5)].map((_, i) => (
-//                 <path
-//                   key={i}
-//                   fill={colors.main}
-//                   opacity={0.15 + i * 0.05}
-//                   filter="url(#glow)"
-//                   d={`
-//                     M 0 ${100 - percentage + i}
-//                     Q 20 ${
-//                       100 -
-//                       percentage +
-//                       Math.sin((phase + i * 30) * 0.1) * (8 + i * 2)
-//                     }
-//                       40 ${100 - percentage + i}
-//                       T 70 ${100 - percentage + i}
-//                       T 100 ${100 - percentage + i}
-//                     V 100
-//                     H 0
-//                     Z
-//                   `}
-//                 />
-//               ))}
-
-//               {/* Main wave layers with enhanced complexity */}
-//               <path
-//                 fill={colors.main}
-//                 opacity="0.4"
-//                 filter="url(#glow)"
-//                 d={`
-//                   M 0 ${100 - percentage + 2}
-//                   Q 25 ${100 - percentage + Math.cos((phase + 45) * 0.1) * 12}
-//                     50 ${100 - percentage + 2}
-//                     T 100 ${100 - percentage + 2}
-//                   V 100
-//                   H 0
-//                   Z
-//                 `}
-//               />
-
-//               <path
-//                 fill="url(#waveGradient)"
-//                 opacity="0.6"
-//                 filter="url(#glow)"
-//                 d={`
-//                   M 0 ${100 - percentage + 1}
-//                   Q 20 ${100 - percentage + Math.sin((phase + 90) * 0.1) * 15}
-//                     50 ${100 - percentage + 1}
-//                     T 100 ${100 - percentage + 1}
-//                   V 100
-//                   H 0
-//                   Z
-//                 `}
-//               />
-
-//               {/* Ripple effect waves */}
-//               {[...Array(3)].map((_, i) => (
-//                 <path
-//                   key={`ripple-${i}`}
-//                   fill={colors.accent}
-//                   opacity={0.1}
-//                   filter="url(#glow)"
-//                   d={`
-//                     M 0 ${100 - percentage + 3 + i}
-//                     Q 30 ${
-//                       100 -
-//                       percentage +
-//                       Math.sin((phase + i * 120) * 0.1) * (10 - i * 2)
-//                     }
-//                       60 ${100 - percentage + 3 + i}
-//                       T 100 ${100 - percentage + 3 + i}
-//                     V 100
-//                     H 0
-//                     Z
-//                   `}
-//                 />
-//               ))}
-//             </svg>
-
-//             {/* Dynamic inner glow */}
-//             <div
-//               className="absolute inset-0 pointer-events-none transition-opacity duration-300"
-//               style={{
-//                 background: `
-//                   radial-gradient(circle at center,
-//                     ${colors.glow}30 0%,
-//                     ${colors.accent}10 40%,
-//                     transparent 70%
-//                   )
-//                 `,
-//                 opacity: hoverState ? 0.8 : 0.5,
-//               }}
-//             />
-
-//             {/* Percentage Display with enhanced effects */}
-//             <div className="absolute inset-0 flex items-center justify-center">
-//               {/* <Zap
-//                 width={40}
-//                 height={40}
-//                 className="text-green-500 absolute  top-5"
-//               /> */}
-//               <div className="flex-col  justify-center items-center gap-2">
-//                 <span
-//                   className={`${interThin.className} text-4xl ml-3    ${
-//                     percentage >= 60 ? "text-black " : "text-white"
-//                   } transition-all duration-300`}
-//                   style={{
-//                     textShadow: `
-//                     0 0 10px ${colors.glow}80,
-//                     0 0 20px ${colors.accent}50,
-//                     0 0 30px ${colors.main}30
-//                   `,
-//                     transform: hoverState ? "scale(1.1)" : "scale(1)",
-//                   }}
-//                 >
-//                   {percentage}%
-//                 </span>
-//               </div>
-//             </div>
-
-//             {/* Enhanced shine effects */}
-//             <div
-//               className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent pointer-events-none"
-//               style={{
-//                 opacity: hoverState ? 0.4 : 0.2,
-//               }}
-//             />
-//           </div>
-//         </div>
-
-//         {/* Animated pulse rings */}
-//         {[...Array(3)].map((_, i) => (
-//           <div
-//             key={i}
-//             className="absolute -inset-2 rounded-full animate-pulse"
-//             style={{
-//               animation: `pulse ${2 + i * 0.5}s infinite`,
-//               background: `radial-gradient(circle at center, ${colors.glow}${
-//                 20 - i * 5
-//               }, transparent 70%)`,
-//               animationDelay: `${i * 0.5}s`,
-//             }}
-//           />
-//         ))}
-//       </div>
+//       <span
+//         className="text-white text-4xl font-bold relative z-10"
+//         style={{
+//           textShadow: "0 0 8px rgba(0, 0, 0, 0.5)",
+//         }}
+//         aria-hidden="true"
+//       >
+//         {clampedPercentage}%
+//       </span>
 //     </div>
-  
-  
-//    );
+//   );
 // };
 
 // export default WaveCharging;
-//fix render
+// 'use client';
 
-"use client";
-import React, { useState, useEffect, useMemo } from "react";
+// import { useEffect, useRef } from 'react';
+
+// interface WaveChargingProps {
+//   safePercentag: number;
+// }
+
+// function getWaveGradient(ctx: CanvasRenderingContext2D, width: number, height: number, percent: number): CanvasGradient {
+//   const gradient = ctx.createLinearGradient(0, height, 0, 0);
+
+//   if (percent < 25) {
+//     gradient.addColorStop(0, '#ff3b30'); // red
+//     gradient.addColorStop(1, '#ff9500'); // orange
+//   } else if (percent < 50) {
+//     gradient.addColorStop(0, '#ffcc00'); // yellow
+//     gradient.addColorStop(1, '#34c759'); // green
+//   } else if (percent < 75) {
+//     gradient.addColorStop(0, '#34c759'); // green
+//     gradient.addColorStop(1, '#0a84ff'); // blue
+//   } else {
+//     gradient.addColorStop(0, '#0a84ff'); // blue
+//     gradient.addColorStop(1, '#5e5ce6'); // violet
+//   }
+
+//   return gradient;
+// }
+
+// export default function WaveCharging({ safePercentag }: WaveChargingProps) {
+//   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+//   useEffect(() => {
+//     const canvas = canvasRef.current;
+//     if (!canvas) return;
+//     const ctx = canvas.getContext('2d');
+//     if (!ctx) return;
+
+//     const width = canvas.width;
+//     const height = canvas.height;
+
+//     const waveHeight = 12;
+//     const waveLength = 80;
+//     const waveSpeed = 0.08;
+//     const secondaryWaveOffset = 15;
+
+//     let offset = 0;
+//     let animationFrameId: number;
+
+//     const drawWave = () => {
+//       ctx.clearRect(0, 0, width, height);
+
+//       // Glassy background
+//       ctx.beginPath();
+//       ctx.arc(width / 2, height / 2, width / 2, 0, Math.PI * 2);
+//       ctx.closePath();
+//       ctx.fillStyle = 'rgba(15, 23, 42, 0.6)'; // Slate with alpha
+//       ctx.fill();
+
+//       // Clip the circle
+//       ctx.save();
+//       ctx.beginPath();
+//       ctx.arc(width / 2, height / 2, width / 2, 0, Math.PI * 2);
+//       ctx.clip();
+
+//       const waveY = height * (1 - safePercentag / 100);
+
+//       // Dynamic neon gradient
+//       const gradient = getWaveGradient(ctx, width, height, safePercentag);
+//       ctx.fillStyle = gradient;
+//       ctx.shadowColor = gradient as any;
+//       ctx.shadowBlur = 25;
+
+//       // Main wave
+//       ctx.beginPath();
+//       for (let x = 0; x <= width; x++) {
+//         const y = waveY + Math.sin((x + offset) / waveLength) * waveHeight;
+//         ctx.lineTo(x, y);
+//       }
+//       ctx.lineTo(width, height);
+//       ctx.lineTo(0, height);
+//       ctx.closePath();
+//       ctx.fill();
+
+//       // Second wave layer (lighter & transparent)
+//       ctx.globalAlpha = 0.4;
+//       ctx.beginPath();
+//       for (let x = 0; x <= width; x++) {
+//         const y = waveY + Math.sin((x + offset + secondaryWaveOffset) / waveLength) * (waveHeight - 4);
+//         ctx.lineTo(x, y);
+//       }
+//       ctx.lineTo(width, height);
+//       ctx.lineTo(0, height);
+//       ctx.closePath();
+//       ctx.fill();
+//       ctx.globalAlpha = 1;
+
+//       ctx.restore();
+
+//       offset += waveSpeed * waveLength;
+//       animationFrameId = requestAnimationFrame(drawWave);
+//     };
+
+//     drawWave();
+//     return () => cancelAnimationFrame(animationFrameId);
+//   }, [safePercentag]);
+
+//   return (
+//     <canvas
+//       ref={canvasRef}
+//       width={200}
+//       height={200}
+//       className="rounded-full backdrop-blur-md bg-transparent border-2 border-white/10 shadow-2xl"
+//     />
+//   );
+// }
+// 'use client';
+
+// import { useEffect, useRef } from 'react';
+
+// interface WaveChargingProps {
+//   safePercentag: number;
+// }
+
+// function getWaveColor(percent: number): string {
+//   // Clamp between 0 and 100
+//   const p = Math.max(0, Math.min(percent, 100));
+
+//   // Custom blend: Red → Yellow → Blue → Green
+//   let r = 0, g = 0, b = 0;
+
+//   if (p < 25) {
+//     // Red to Yellow
+//     r = 255;
+//     g = Math.round((p / 25) * 255);
+//     b = 0;
+//   } else if (p < 50) {
+//     // Yellow to Blue
+//     r = Math.round(255 - ((p - 25) / 25) * 255);
+//     g = 255;
+//     b = Math.round(((p - 25) / 25) * 255);
+//   } else if (p < 75) {
+//     // Blue to Cyan
+//     r = 0;
+//     g = Math.round(255 - ((p - 50) / 25) * 155);
+//     b = 255;
+//   } else {
+//     // Cyan to Green
+//     r = 0;
+//     g = 255;
+//     b = Math.round(255 - ((p - 75) / 25) * 255);
+//   }
+
+//   return `rgb(${r}, ${g}, ${b})`;
+// }
+
+// export default function WaveCharging({ safePercentag }: WaveChargingProps) {
+//   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+//   useEffect(() => {
+//     const canvas = canvasRef.current;
+//     if (!canvas) return;
+//     const ctx = canvas.getContext('2d');
+//     if (!ctx) return;
+
+//     const width = canvas.width;
+//     const height = canvas.height;
+//     const waveHeight = 10;
+//     const waveLength = 60;
+//     const waveSpeed = 0.05;
+
+//     let offset = 0;
+//     let animationFrameId: number;
+
+//     const drawWave = () => {
+//       ctx.clearRect(0, 0, width, height);
+
+//       // Clip in a circle
+//       ctx.beginPath();
+//       ctx.arc(width / 2, height / 2, width / 2, 0, Math.PI * 2);
+//       ctx.clip();
+
+//       // Background
+//       ctx.fillStyle = '#0f172a'; // dark slate
+//       ctx.fillRect(0, 0, width, height);
+
+//       const waveY = height * (1 - safePercentag / 100);
+
+//       // Dynamic wave color
+//       ctx.beginPath();
+//       for (let x = 0; x <= width; x++) {
+//         const y = waveY + Math.sin((x + offset) / waveLength) * waveHeight;
+//         ctx.lineTo(x, y);
+//       }
+//       ctx.lineTo(width, height);
+//       ctx.lineTo(0, height);
+//       ctx.closePath();
+
+//       ctx.fillStyle = getWaveColor(safePercentag);
+//       ctx.shadowColor = ctx.fillStyle;
+//       ctx.shadowBlur = 20;
+//       ctx.fill();
+
+//       offset += waveSpeed * waveLength;
+//       animationFrameId = requestAnimationFrame(drawWave);
+//     };
+
+//     drawWave();
+
+//     return () => cancelAnimationFrame(animationFrameId);
+//   }, [safePercentag]);
+
+//   return (
+//     <canvas
+//       ref={canvasRef}
+//       width={200}
+//       height={200}
+//       className="rounded-full bg-transparent"
+//     />
+//   );
+// }
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
 
 interface WaveChargingProps {
-  percentage?: number;
-  waveColor?: string;
-  backgroundColor?: string;
-  size?: number;
+  safePercentag: number;
+  charging: boolean;
 }
 
-const WaveCharging = ({ 
-  percentage = 0, 
-  waveColor = "rgba(0, 123, 255, 0.7)",
-  backgroundColor = "rgba(220, 220, 220, 0.2)",
-  size = 160
-}: WaveChargingProps) => {
-  const [phase, setPhase] = useState(0);
-  const clampedPercentage = Math.min(100, Math.max(0, percentage));
+function getWaveGradient(ctx: CanvasRenderingContext2D, width: number, height: number, percent: number): CanvasGradient {
+  const gradient = ctx.createLinearGradient(0, height, 0, 0);
 
-  // Smoother animation using requestAnimationFrame
+  if (percent < 25) {
+    gradient.addColorStop(0, '#ff3b30'); // red
+    gradient.addColorStop(1, '#ff9500'); // orange
+  } else if (percent < 50) {
+    gradient.addColorStop(0, '#ffcc00'); // yellow
+    gradient.addColorStop(1, '#34c759'); // green
+  } else if (percent < 75) {
+    gradient.addColorStop(0, '#34c759'); // green
+    gradient.addColorStop(1, '#0a84ff'); // blue
+  } else {
+    gradient.addColorStop(0, '#0a84ff'); // blue
+    gradient.addColorStop(1, '#5e5ce6'); // violet
+  }
+
+  return gradient;
+}
+
+export default function WaveCharging({ safePercentag, charging }: WaveChargingProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rippleRef = useRef<HTMLDivElement>(null);
+  const [prevPercent, setPrevPercent] = useState(safePercentag);
+
   useEffect(() => {
-    let animationFrameId: number;
-    let lastTime = 0;
-    const fps = 30; // Target 30fps for smoother animation
-    const interval = 1000 / fps;
-
-    const animate = (time: number) => {
-      if (time - lastTime > interval) {
-        setPhase((prev) => (prev + 2) % 360); // Slightly faster phase change
-        lastTime = time;
+    if (safePercentag !== prevPercent && charging) {
+      // Trigger ripple effect
+      if (rippleRef.current) {
+        rippleRef.current.classList.remove('ripple-animate');
+        void rippleRef.current.offsetWidth; // Trigger reflow
+        rippleRef.current.classList.add('ripple-animate');
       }
-      animationFrameId = requestAnimationFrame(animate);
+      setPrevPercent(safePercentag);
+    }
+  }, [safePercentag, charging, prevPercent]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const width = canvas.width;
+    const height = canvas.height;
+
+    const waveHeight = 12;
+    const waveLength = 80;
+    const waveSpeed = 0.08;
+    const secondaryWaveOffset = 15;
+
+    let offset = 0;
+    let animationFrameId: number;
+
+    // Sparkle effect params
+    const sparkles: { x: number; y: number; radius: number; alpha: number; delta: number }[] = [];
+    const maxSparkles = 8;
+
+    // Initialize sparkles randomly around the wave area
+    for (let i = 0; i < maxSparkles; i++) {
+      sparkles.push({
+        x: Math.random() * width,
+        y: height * 0.5 + Math.random() * height * 0.5,
+        radius: 1 + Math.random() * 2,
+        alpha: Math.random(),
+        delta: 0.02 + Math.random() * 0.03,
+      });
+    }
+
+    const drawSparkles = () => {
+      sparkles.forEach((s) => {
+        s.alpha += s.delta;
+        if (s.alpha > 1 || s.alpha < 0) s.delta = -s.delta;
+        ctx.beginPath();
+        ctx.shadowColor = 'white';
+        ctx.shadowBlur = 6;
+        ctx.fillStyle = `rgba(255,255,255,${s.alpha.toFixed(2)})`;
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
     };
 
-    animationFrameId = requestAnimationFrame(animate);
+    const drawWave = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      // Glassy background circle
+      ctx.beginPath();
+      ctx.arc(width / 2, height / 2, width / 2, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.7)'; // Slightly darker glass
+      ctx.fill();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(width / 2, height / 2, width / 2, 0, Math.PI * 2);
+      ctx.clip();
+
+      const waveY = height * (1 - safePercentag / 100);
+
+      // Dynamic neon gradient
+      const gradient = getWaveGradient(ctx, width, height, safePercentag);
+      ctx.fillStyle = gradient;
+      ctx.shadowColor = gradient as any;
+      ctx.shadowBlur = 25;
+
+      // Main wave
+      ctx.beginPath();
+      for (let x = 0; x <= width; x++) {
+        const y = waveY + Math.sin((x + offset) / waveLength) * waveHeight;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(width, height);
+      ctx.lineTo(0, height);
+      ctx.closePath();
+      ctx.fill();
+
+      // Secondary wave layer (lighter)
+      ctx.globalAlpha = 0.3;
+      ctx.beginPath();
+      for (let x = 0; x <= width; x++) {
+        const y = waveY + Math.sin((x + offset + secondaryWaveOffset) / waveLength) * (waveHeight - 6);
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(width, height);
+      ctx.lineTo(0, height);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Draw sparkles
+      drawSparkles();
+
+      ctx.restore();
+
+      // Pulse effect if 100%
+      if (safePercentag >= 100) {
+        const pulseRadius = 100 + Math.sin(offset * 0.3) * 10;
+        ctx.beginPath();
+        ctx.arc(width / 2, height / 2, pulseRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 255, 255, 0.2)';
+        ctx.lineWidth = 6;
+        ctx.shadowColor = 'cyan';
+        ctx.shadowBlur = 30;
+        ctx.stroke();
+      }
+
+      offset += waveSpeed * waveLength;
+      animationFrameId = requestAnimationFrame(drawWave);
+    };
+
+    drawWave();
+
     return () => cancelAnimationFrame(animationFrameId);
-  }, []);
-
-  // Dynamic wave amplitude based on charging percentage
-  const waveAmplitude = useMemo(() => {
-    return clampedPercentage > 90 ? 1 : clampedPercentage > 50 ? 2 : 3;
-  }, [clampedPercentage]);
-
-  // Memoized wave path for better performance
-  const wavePath = useMemo(() => {
-    const yPos = 100 - clampedPercentage;
-    return `M0 ${yPos} 
-            Q20 ${yPos + Math.sin((phase * Math.PI) / 180) * waveAmplitude} 
-            40 ${yPos} 
-            T100 ${yPos} 
-            V100 H0 Z`;
-  }, [phase, clampedPercentage, waveAmplitude]);
+  }, [safePercentag]);
 
   return (
-    <div
-      className="relative flex items-center justify-center rounded-full overflow-hidden"
-      style={{
-        width: `${size}px`,
-        height: `${size}px`,
-        backgroundColor,
-        boxShadow: `0px 0px 15px ${waveColor}`,
-      }}
-      role="progressbar"
-      aria-valuenow={clampedPercentage}
-      aria-valuemin={0}
-      aria-valuemax={100}
-    >
-      <svg 
-        className="absolute inset-0 w-full h-full" 
-        viewBox="0 0 100 100" 
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <path
-          fill={waveColor}
-          d={wavePath}
-        />
-      </svg>
+    <div className="relative w-[220px] h-[220px] rounded-full bg-gradient-to-br from-[#111827] via-[#1e293b] to-[#0f172a] shadow-2xl shadow-cyan-900/40 flex items-center justify-center select-none">
+      <canvas
+        ref={canvasRef}
+        width={220}
+        height={220}
+        className="rounded-full"
+      />
 
-      <span
-        className="text-white text-4xl font-bold relative z-10"
+      {/* Ripple effect */}
+      <div
+        ref={rippleRef}
+        className="pointer-events-none absolute rounded-full border-2 border-cyan-400 opacity-0"
         style={{
-          textShadow: "0 0 8px rgba(0, 0, 0, 0.5)",
+          width: 220,
+          height: 220,
+          top: 0,
+          left: 0,
+          boxShadow: '0 0 15px 3px cyan',
+          transition: 'opacity 0.3s ease-in-out, transform 0.5s ease-out',
         }}
-        aria-hidden="true"
-      >
-        {clampedPercentage}%
-      </span>
+      />
+
+      {/* Center SOC Text */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-cyan-400 font-extrabold select-none pointer-events-none">
+        <span className="text-6xl drop-shadow-lg">{safePercentag}%</span>
+        <span className="uppercase text-xs tracking-widest drop-shadow-md text-cyan-300">
+          Charge Level
+        </span>
+      </div>
+
+      <style jsx>{`
+        .ripple-animate {
+          opacity: 0.6 !important;
+          transform: scale(1.3);
+          transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+      `}</style>
     </div>
   );
-};
-
-export default WaveCharging;
+}
