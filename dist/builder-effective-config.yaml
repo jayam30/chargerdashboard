@@ -1,0 +1,22 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.jayam.chargingsystem
+productName: ChargingSystemApp
+files:
+  - filter:
+      - main.js
+      - out/**/*
+      - backend/**/*
+      - node_modules/**/*
+      - package.json
+extraResources:
+  - from: backend
+    to: backend
+asar: true
+linux:
+  target:
+    - AppImage
+  category: Utility
+  icon: icon.png
+electronVersion: 30.5.1
