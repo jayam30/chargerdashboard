@@ -1,3 +1,60 @@
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Testing
+coverage/
+
+# Next.js build output
+.next/
+out/
+
+# Production
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment variables
+.env*
+!.env.example
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional - ignoring local types if generated
+types/
+
+# Optional - ignoring public static cache if any
+public/cache/
+
+# Optional - ignore Turbo/Tasks (if using Turborepo)
+turbo/
+.task/
+
+# Optional - ignore compiled CSS if using Tailwind CLI
+*.css.d.ts
+
+# Optional - ignore uploads/temp files
+uploads/
+tmp/
+temp/
+=======
 # Node.js
 node_modules/
 npm-debug.log
