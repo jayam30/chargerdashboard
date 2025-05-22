@@ -1,3 +1,4 @@
+
 # Dependencies
 node_modules/
 .pnp/
@@ -53,3 +54,30 @@ turbo/
 uploads/
 tmp/
 temp/
+=======
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Build directories
+build/
+dist/
+
+# Dependencies
+package-lock.json
+yarn.lock
+
+# IDE configurations
+.vscode/
+.idea/
+.DS_Store

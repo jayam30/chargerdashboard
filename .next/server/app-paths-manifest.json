@@ -1,0 +1,8 @@
+{
+  "/page": "app/page.js",
+  "/park/page": "app/park/page.js",
+  "/select/page": "app/select/page.js",
+  "/charge/page": "app/charge/page.js",
+  "/done/page": "app/done/page.js",
+  "/connect/page": "app/connect/page.js"
+}
