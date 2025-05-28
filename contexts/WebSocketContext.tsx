@@ -799,6 +799,10 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       // toast.error("⚠️ Foreign Object Detected! Charging may be unsafe.");
     }
   }, [bmsData.isFOD]);
+  useEffect(() => {
+  console.log("[WebSocketProvider] Charging status changed:", chargingStatus.isCharging);
+}, [chargingStatus.isCharging]);
+
 
   useEffect(() => {
     if (bmsData.isMiss) {
