@@ -453,16 +453,16 @@ export default function Home() {
           router.push("/connect");
         }
       } catch (error) {
-        console.error("WebSocket Error:", error);
+        // console.error("WebSocket Error:", error);
       }
     };
 
     wsRef.current.onerror = (error) => {
-      console.error("WebSocket Error:", error);
+      // console.error("WebSocket Error:", error);
     };
 
     wsRef.current.onclose = () => {
-      console.log("WebSocket disconnected");
+      // console.log("WebSocket disconnected");
     };
 
     return () => {

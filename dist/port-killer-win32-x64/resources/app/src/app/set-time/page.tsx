@@ -482,7 +482,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { ChevronLeft, ChevronRight, Timer, Zap, Home } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
@@ -519,9 +519,9 @@ export default function SetTimePage() {
 
   const handleSelect = async () => {
     if (hours === 0 && minutes === 0) {
-      toast.error("⚠️ Please select a valid charging duration", {
-        style: { color: "white" }, // Ensuring error message is visible
-      });
+      // toast.error("⚠️ Please select a valid charging duration", {
+      //   style: { color: "white" }, // Ensuring error message is visible
+      // });
       return;
     }
 
@@ -532,20 +532,20 @@ export default function SetTimePage() {
 
       const success = await updateChargingStatus(true);
       if (success) {
-        toast.success(`✅ Charging scheduled for ${hours}h ${minutes}m`, {
-          style: { color: "white" }, // Toast message in white
-        });
+        // toast.success(`✅ Charging scheduled for ${hours}h ${minutes}m`, {
+        //   style: { color: "white" }, // Toast message in white
+        // });
         router.push("/charge");
       } else {
-        toast.error("⚠️ Failed to initialize charging", {
-          style: { color: "white" },
-        });
+        // toast.error("⚠️ Failed to initialize charging", {
+        //   style: { color: "white" },
+        // });
       }
     } catch (error) {
       console.error("Error initializing charging:", error);
-      toast.error("⚠️ Failed to initialize charging", {
-        style: { color: "white" },
-      });
+      // toast.error("⚠️ Failed to initialize charging", {
+      //   style: { color: "white" },
+      // });
     } finally {
       setIsLoading(false);
     }

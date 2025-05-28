@@ -90,7 +90,7 @@
 //   // Monitor receiver coil detection
 //   useEffect(() => {
 //     if (bmsData.isReceiverCoilDetected) {
-//       toast.success('Receiver coil detected');
+//      
 //     } else if (bmsData.isReceiverCoilDetected === false) {
 //       toast.error('Receiver coil not detected');
 //     }
@@ -211,7 +211,7 @@
 //   // Monitor receiver coil detection
 //   useEffect(() => {
 //     if (bmsData.isReceiverCoilDetected) {
-//       toast.success('Receiver coil detected');
+//       
 //     } else if (bmsData.isReceiverCoilDetected === false) {
 //       toast.error('Receiver coil not detected');
 //     }
@@ -238,7 +238,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useWebSocket } from '../contexts/WebSocketContext';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 
 interface BMSData {
   voltage: number;
@@ -277,7 +277,7 @@ export function useBMSData() {
   // Update BMS data
   const updateBMSData = useCallback(async (newData: Partial<BMSData>): Promise<boolean> => {
     if (!connected) {
-      toast.error('Not connected to charging system');
+   
       return false;
     }
 
@@ -296,7 +296,7 @@ export function useBMSData() {
       return true;
     } catch (error) {
       console.error('Error updating BMS data:', error);
-      toast.error('Failed to update BMS data');
+      // toast.error('Failed to update BMS data');
       return false;
     }
   }, [connected, sendMessage, bmsData]);
@@ -304,7 +304,7 @@ export function useBMSData() {
   // Reset BMS data
   const resetBMSData = useCallback(() => {
     if (!connected) {
-      toast.error('Not connected to charging system');
+      // toast.error('Not connected to charging system');
       return;
     }
 
@@ -328,16 +328,16 @@ export function useBMSData() {
       toast.success('BMS data reset');
     } catch (error) {
       console.error('Error resetting BMS data:', error);
-      toast.error('Failed to reset BMS data');
+      // toast.error('Failed to reset BMS data');
     }
   }, [connected, sendMessage]);
 
   // Monitor receiver coil detection
   useEffect(() => {
     if (bmsData.isReceiverCoilDetected) {
-      toast.success('Receiver coil detected');
+    
     } else if (bmsData.isReceiverCoilDetected === false) {
-      toast.error('Receiver coil not detected');
+   
     }
   }, [bmsData.isReceiverCoilDetected]);
 

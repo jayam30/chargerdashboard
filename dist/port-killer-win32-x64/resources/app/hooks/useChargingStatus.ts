@@ -59,7 +59,7 @@
 "use client"
 import { useState, useEffect, useCallback } from "react";
 import { useWebSocket } from "../contexts/WebSocketContext";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 
 export function useChargingStatus() {
   const { sendMessage, lastMessage, connected } = useWebSocket();
@@ -82,7 +82,7 @@ export function useChargingStatus() {
   const updateChargingStatus = useCallback(
     async (isCharging: boolean): Promise<boolean> => {
       if (!connected) {
-        toast.error("Not connected to charging system");
+        // toast.error("Not connected to charging system");
         return false;
       }
 
@@ -98,11 +98,11 @@ export function useChargingStatus() {
           data: { isCharging },
         });
 
-        toast.success(isCharging ? "Charging started" : "Charging stopped");
+        // toast.success(isCharging ? "Charging started" : "Charging stopped");
         return true;
       } catch (error) {
         console.error("Error updating charging status:", error);
-        toast.error("Failed to update charging status");
+        // toast.error("Failed to update charging status");
         return false;
       }
     },

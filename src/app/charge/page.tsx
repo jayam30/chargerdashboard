@@ -4180,7 +4180,7 @@ export default function ChargePage() {
   }, [bmsData, isChargingInitialized, parkCountdown]);
 
   return (
-    <div className="w-full h-screen overflow-hidden bg-black font-sans" style={{ backgroundImage: "url(/main-bg.png)", backgroundSize: "cover", backgroundPosition: "center" }}>
+    <div className="w-full min-h-screen overflow-hidden bg-black font-sans" style={{ backgroundImage: "url(/main-bg.png)", backgroundSize: "cover", backgroundPosition: "center" }}>
       <div className="flex flex-col items-center justify-between h-full pb-6 pt-12">
         {/* Header */}
         <motion.div className="text-white/90 text-5xl font-medium tracking-wider mb-6" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.6 }}>
@@ -4194,7 +4194,7 @@ export default function ChargePage() {
               updateChargingStatus(false);
               router.push("/");
             }}
-            className="text-white/90 text-sm font-medium flex items-center"
+            className="text-white/90 text-xl font-medium flex items-center"
           >
             {bmsData?.SOC ?? 48}% Charged
           </button>
@@ -4206,17 +4206,10 @@ export default function ChargePage() {
         {bmsData?.isMiss && <MissDialog />}
         </div>
 
-        {/* Charging animation */}
+      {/* Charging animation */}
         <div className="flex flex-col items-center justify-center flex-grow">
-          <div className="relative mb-8">
-
-            {/* <WaveCharging percentage={bmsData?.SOC || 48} waveColor={waveColor} backgroundColor="rgba(255, 255, 255, 0.1)" size={200} /> */}
-          <WaveCharging safePercentag={bmsData?.SOC ?? 48} />
-
-            {/* <div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-medium">
-              {bmsData?.SOC ?? 48}%
-            </div> */}
-
+          <div className="relative mb-7">
+               <WaveCharging safePercentag={bmsData?.SOC ?? 48} />
           </div>
 
           {/* Vehicle + Pad */}
@@ -4228,7 +4221,7 @@ export default function ChargePage() {
               transition={{ duration: 2, type: "spring", stiffness: 100, damping: 20, repeat: bmsData?.isReceiverCoilDetected ? 0 : Infinity, repeatType: "reverse" }}
               className="mb-4"
             >
-              <Image src="/charge-bike.png" alt="Electric scooter" width={300} height={180} className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]" />
+              <Image src="/charge-bike.png" alt="Electric scooter" width={530} height={150} className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]" />
             </motion.div>
             <div className="relative">
               <Image src="/charge-pad.png" alt="Charger pad" width={150} height={20} className="drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]" />
@@ -4238,25 +4231,26 @@ export default function ChargePage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-4 w-full max-w-xl px-4 mt-8">
-          {[
-            { label: "Energy", value: `${energyConsumed.toFixed(5)} kWh` },
-            { label: "Time Remaining", value: `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}` },
-            { label: "Charging Current", value: `${(bmsData?.current ?? 0).toFixed(2)} A` },
-            { label: "Power", value: `${((chargingPower ?? 0) / 1000).toFixed(1)} W` },
-          ].map((stat, idx) => (
-            <motion.div
-              key={stat.label}
-              className="group px-4 py-3 bg-black/20 backdrop-blur-sm rounded-lg text-gray-400 text-lg font-medium text-center hover:bg-black/30 transition-all duration-300"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1 + idx * 0.2 }}
-            >
-              <span className="block">{stat.label}:</span>
-              <span className="group-hover:text-cyan-400/90 transition-colors duration-300">{stat.value}</span>
-            </motion.div>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md sm:max-w-xl px-4 sm:px-6 mt-8">
+  {[
+    { label: "Energy", value: `${energyConsumed.toFixed(5)} kWh` },
+    { label: "Time Remaining", value: `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}` },
+    { label: "Charging Current", value: `${(bmsData?.current ?? 0).toFixed(2)} A` },
+    { label: "Power", value: `${((chargingPower ?? 0) / 1000).toFixed(1)} W` },
+  ].map((stat, idx) => (
+    <motion.div
+      key={stat.label}
+      className="group px-4 py-4 sm:px-6 sm:py-5 bg-black/30 backdrop-blur-md rounded-xl text-gray-300 text-base sm:text-xl font-semibold text-center hover:bg-black/40 transition-all duration-300"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 1 + idx * 0.2 }}
+    >
+      <span className="block text-lg sm:text-2xl font-bold mb-1">{stat.label}:</span>
+      <span className="text-base sm:text-xl group-hover:text-cyan-400/90 transition-colors duration-300">{stat.value}</span>
+    </motion.div>
+  ))}
+</div>
+
       </div>
     </div>
   );
