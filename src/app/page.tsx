@@ -416,15 +416,100 @@
 //   );
 // }
 ////ui
+// "use client";
+
+// import { useEffect, useRef } from "react";
+// import { useRouter } from "next/navigation";
+
+// export default function Home() {
+//   const videoRef = useRef<HTMLVideoElement>(null);
+//   const router = useRouter();
+//   const wsRef = useRef<WebSocket | null>(null);
+
+//   useEffect(() => {
+//     const video = videoRef.current;
+
+//     const handleVideoEnd = () => {
+//       router.push("/connect");
+//     };
+
+//     if (video) {
+//       video.addEventListener("ended", handleVideoEnd);
+//     }
+
+//     // ✅ Set up WebSocket connection
+//     wsRef.current = new WebSocket("ws://localhost:8080");
+
+//     wsRef.current.onopen = () => {
+//       // console.log("WebSocket connected");
+//     };
+
+//     wsRef.current.onmessage = (event) => {
+//       try {
+//         const data = JSON.parse(event.data);
+//         // console.log("WebSocket Message:", data);
+
+//         if (data?.redirectTo === "set-time") {
+//           router.push("/connect");
+//         }
+//       } catch (error) {
+//         // console.error("WebSocket Error:", error);
+//       }
+//     };
+
+//     wsRef.current.onerror = (error) => {
+//       // console.error("WebSocket Error:", error);
+//     };
+
+//     wsRef.current.onclose = () => {
+//       // console.log("WebSocket disconnected");
+//     };
+
+//     return () => {
+//       // Cleanup: Remove event listener and close WebSocket
+//       if (video) {
+//         video.removeEventListener("ended", handleVideoEnd);
+//       }
+//       wsRef.current?.close();
+//     };
+//   }, [router]);
+
+//   return (
+//     <div className="relative w-[768px] h-[1024px] overflow-hidden bg-[#2A2D32] font-sans">
+//       <video
+//         ref={videoRef}
+//         className="absolute top-0 left-0 w-full h-full object-cover z-50"
+//         autoPlay
+//         muted
+//         playsInline
+//       >
+//         <source src="/intro.mp4" type="video/mp4" />
+//         Your browser does not support the video tag.
+//       </video>
+
+//       {/* ✅ Responsive fallback background */}
+//       <div
+//         className="absolute top-0 left-0 w-full h-full z-[-1]"
+//         style={{
+//           backgroundImage: "url(/connect-bg.png)",
+//           backgroundSize: "cover",
+//           backgroundPosition: "center",
+//         }}
+//       />
+//     </div>
+//   );
+// }
+
 "use client";
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useChargingStatus } from "../../hooks/useChargingStatus"; // adjust the path if needed
 
 export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
-  const wsRef = useRef<WebSocket | null>(null);
+  const { updateChargingStatus } = useChargingStatus();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -437,42 +522,15 @@ export default function Home() {
       video.addEventListener("ended", handleVideoEnd);
     }
 
-    // ✅ Set up WebSocket connection
-    wsRef.current = new WebSocket("ws://localhost:8080");
-
-    wsRef.current.onopen = () => {
-      // console.log("WebSocket connected");
-    };
-
-    wsRef.current.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        // console.log("WebSocket Message:", data);
-
-        if (data?.redirectTo === "set-time") {
-          router.push("/connect");
-        }
-      } catch (error) {
-        // console.error("WebSocket Error:", error);
-      }
-    };
-
-    wsRef.current.onerror = (error) => {
-      // console.error("WebSocket Error:", error);
-    };
-
-    wsRef.current.onclose = () => {
-      // console.log("WebSocket disconnected");
-    };
+    // ✅ Turn off charging on landing this page
+    updateChargingStatus(false);
 
     return () => {
-      // Cleanup: Remove event listener and close WebSocket
       if (video) {
         video.removeEventListener("ended", handleVideoEnd);
       }
-      wsRef.current?.close();
     };
-  }, [router]);
+  }, [router, updateChargingStatus]);
 
   return (
     <div className="relative w-[768px] h-[1024px] overflow-hidden bg-[#2A2D32] font-sans">
@@ -487,7 +545,6 @@ export default function Home() {
         Your browser does not support the video tag.
       </video>
 
-      {/* ✅ Responsive fallback background */}
       <div
         className="absolute top-0 left-0 w-full h-full z-[-1]"
         style={{

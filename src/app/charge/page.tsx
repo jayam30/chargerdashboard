@@ -4003,6 +4003,7 @@ import WaveCharging from "../../../components/WaveCharging";
 import FODDialog from "../../../components/FODDialog";
 import MissDialog from "../../../components/MissDialog";
 import Image from "next/image";
+import { useResetCharging } from "../../../hooks/useResetCharging"; 
 // const poppins = Poppins({ subsets: ["latin"], weight: ["500"] });
 
 export default function ChargePage() {
@@ -4010,7 +4011,7 @@ export default function ChargePage() {
   const { updateChargingStatus, isChargingInitialized } = useChargingStatus();
   const { bmsData, chargingPower } = useBMSData();
   const { endTime } = useTimerStatus();
-
+ const { resetAll } = useResetCharging();
 
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [energyConsumed, setEnergyConsumed] = useState(0);
@@ -4190,14 +4191,14 @@ export default function ChargePage() {
         {/* SOC pill */}
         <motion.div className="inline-flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/5 shadow-lg mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.8 }}>
           <button
-            onClick={() => {
-              updateChargingStatus(false);
-              router.push("/");
-            }}
-            className="text-white/90 text-xl font-medium flex items-center"
-          >
-            {bmsData?.SOC ?? 48}% Charged
-          </button>
+        onClick={() => {
+          resetAll(); // This resets charging, timer, and BMS data
+          router.push("/");
+        }}
+        className="text-white/90 text-xl font-medium flex items-center"
+      >
+        {bmsData?.SOC ?? 48}% Charged
+      </button>
         </motion.div>
 
         {/* Alerts */}

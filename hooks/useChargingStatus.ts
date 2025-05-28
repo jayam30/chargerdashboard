@@ -59,7 +59,6 @@
 "use client"
 import { useState, useEffect, useCallback } from "react";
 import { useWebSocket } from "../contexts/WebSocketContext";
-// import { toast } from "sonner";
 
 export function useChargingStatus() {
   const { sendMessage, lastMessage, connected } = useWebSocket();
