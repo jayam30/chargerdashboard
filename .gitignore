@@ -53,3 +53,6 @@ turbo/
 uploads/
 tmp/
 temp/
+# .gitignore
+dist/port-killer-linux-x64/port-killer
+dist/port-killer-win32-x64/port-killer.exe
