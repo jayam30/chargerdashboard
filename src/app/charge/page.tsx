@@ -4206,7 +4206,7 @@ export default function ChargePage() {
         {bmsData?.isMiss && <MissDialog />}
         </div>
 
-        {/* Charging animation */}
+      {/* Charging animation */}
         <div className="flex flex-col items-center justify-center flex-grow">
           <div className="relative mb-7">
                <WaveCharging safePercentag={bmsData?.SOC ?? 48} />
