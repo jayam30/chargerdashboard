@@ -650,7 +650,7 @@
 "use client"; // Next.js ka client component batane ke liye
 
 import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
-import { toast } from "sonner"; // Notification dikhane ke liye
+// import { toast } from "sonner"; // Notification dikhane ke liye
 
 // ✅ WebSocket se aane wale data ka type define karna
 interface BMSData {
@@ -708,7 +708,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     ws.current.onopen = () => {
       console.log("✅ WebSocket Connected");
       setConnected(true); // Connected status ko true kar do
-      toast.success("Connected to charging system"); // Notification bhejo
+      // toast.success("Connected to charging system"); // Notification bhejo
 
       if (reconnectTimeout.current) {
         clearTimeout(reconnectTimeout.current); // Agar koi reconnect timeout hai to use hata do
@@ -736,9 +736,9 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
             setChargingStatus(chargingData); // Charging status update kar do
 
             if (!chargingData.isCharging) {
-              toast.info("🔴 Charging has been turned OFF."); // Charging band hone ka message dikhana
+              // toast.info("🔴 Charging has been turned OFF."); // Charging band hone ka message dikhana
             } else {
-              toast.success("⚡ Charging Started!"); // Charging start hone ka message dikhana
+              // toast.success("⚡ Charging Started!"); // Charging start hone ka message dikhana
             }
             break;
 
@@ -747,7 +747,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
             break;
 
           case "error": // Agar WebSocket error aayi
-            toast.error("⚠️ WebSocket Error Received");
+            // toast.error("⚠️ WebSocket Error Received");
             break;
 
           default:
@@ -760,7 +760,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
     ws.current.onerror = (event) => {
       console.error("🚨 WebSocket Error:", event);
-      toast.error("WebSocket connection error"); // WebSocket error ka notification bhejna
+      // toast.error("WebSocket connection error"); // WebSocket error ka notification bhejna
     };
 
     ws.current.onclose = () => {
@@ -790,19 +790,19 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       console.log("🚀 Sending WebSocket Message:", JSON.stringify(message)); // Message ka log
       ws.current.send(JSON.stringify(message)); // WebSocket par message bhejna
     } else {
-      toast.error("❌ Not connected to charging system"); // Agar connection nahi hai to error dikhana
+      // toast.error("❌ Not connected to charging system"); // Agar connection nahi hai to error dikhana
     }
   };
 
   useEffect(() => {
     if (bmsData.isFOD) {
-      toast.error("⚠️ Foreign Object Detected! Charging may be unsafe.");
+      // toast.error("⚠️ Foreign Object Detected! Charging may be unsafe.");
     }
   }, [bmsData.isFOD]);
 
   useEffect(() => {
     if (bmsData.isMiss) {
-      toast.error("⚠️ Misalignment detected! Please realign the vehicle.");
+      // toast.error("⚠️ Misalignment detected! Please realign the vehicle.");
     }
   }, [bmsData.isMiss]);
   

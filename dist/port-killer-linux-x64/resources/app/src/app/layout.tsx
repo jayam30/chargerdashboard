@@ -1,6 +1,6 @@
 
 
-import { Toaster } from "sonner";
+// import { Toaster } from "sonner";
 import { WebSocketProvider } from "../../contexts/WebSocketContext";
 import "../styles/globals.css"; // Ensure correct path
 // import localFont from "next/font/local";
@@ -21,7 +21,7 @@ export default function RootLayout({
             {children}
           </div>
         </div>
-          <Toaster />
+          {/* <Toaster /> */}
         </WebSocketProvider>
       </body>
     </html>

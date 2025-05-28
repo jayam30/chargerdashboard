@@ -490,43 +490,45 @@ export default function WaveCharging({ safePercentag, charging }: WaveChargingPr
   }, [safePercentag]);
 
   return (
-    <div className="relative w-[220px] h-[220px] rounded-full bg-gradient-to-br from-[#111827] via-[#1e293b] to-[#0f172a] shadow-2xl shadow-cyan-900/40 flex items-center justify-center select-none">
-      <canvas
-        ref={canvasRef}
-        width={220}
-        height={220}
-        className="rounded-full"
-      />
+  <div className="relative w-[160px] h-[160px] rounded-full bg-gradient-to-br from-[#111827] via-[#1e293b] to-[#0f172a] shadow-2xl shadow-cyan-900/40 flex items-center justify-center select-none">
+    <canvas
+      ref={canvasRef}
+      width={160}
+      height={160}
+      className="rounded-full"
+    />
 
-      {/* Ripple effect */}
-      <div
-        ref={rippleRef}
-        className="pointer-events-none absolute rounded-full border-2 border-cyan-400 opacity-0"
-        style={{
-          width: 220,
-          height: 220,
-          top: 0,
-          left: 0,
-          boxShadow: '0 0 15px 3px cyan',
-          transition: 'opacity 0.3s ease-in-out, transform 0.5s ease-out',
-        }}
-      />
+    {/* Ripple effect */}
+    <div
+      ref={rippleRef}
+      className="pointer-events-none absolute rounded-full border-2 border-cyan-400 opacity-0"
+      style={{
+        width: 160,
+        height: 160,
+        top: 0,
+        left: 0,
+        boxShadow: '0 0 15px 3px cyan',
+        transition: 'opacity 0.3s ease-in-out, transform 0.5s ease-out',
+      }}
+    />
 
-      {/* Center SOC Text */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-cyan-400 font-extrabold select-none pointer-events-none">
-        <span className="text-6xl drop-shadow-lg">{safePercentag}%</span>
-        <span className="uppercase text-xs tracking-widest drop-shadow-md text-cyan-300">
-          Charge Level
-        </span>
-      </div>
+    {/* Center SOC Text */}
+    <div className="absolute inset-0 flex flex-col items-center justify-center text-cyan-400 font-extrabold select-none pointer-events-none">
+  <span className="text-2xl drop-shadow-lg">{safePercentag}%</span>
+  <span className="uppercase text-[10px] tracking-widest drop-shadow-md text-cyan-300">
+    Charge Level
+  </span>
+</div>
 
-      <style jsx>{`
-        .ripple-animate {
-          opacity: 0.6 !important;
-          transform: scale(1.3);
-          transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-      `}</style>
-    </div>
-  );
+
+    <style jsx>{`
+      .ripple-animate {
+        opacity: 0.6 !important;
+        transform: scale(1.3);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      }
+    `}</style>
+  </div>
+);
+
 }
